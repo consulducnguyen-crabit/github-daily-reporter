@@ -43,6 +43,11 @@
 - Mọi `font-size`/`font` trong `styles.css` dùng `calc(Npx*var(--fs))`; `--fs` mặc định 1,15 (chữ lớn hơn ~15%), chọn 1 / 1,15 / 1,3 / 1,45 trong Cài đặt (khóa localStorage `github-daily-fontscale`). Quy ước: khai báo cỡ chữ mới phải viết dạng `calc(Npx*var(--fs))`.
 - Hai nút nổi tròn ↑/↓ (hiện khi cuộn quá 300px / còn cách đáy hơn 300px), tôn trọng giảm chuyển động, ẩn khi in. Đã thử cuộn lên/xuống, chữ 1,45 và màn hình 390px (không tràn ngang).
 
+### Làm lại giao diện "bản tin kỹ thuật yên trầm"
+- Viết lại toàn bộ `styles.css` (biến màu giấy ấm/than, 1 màu nhấn cam đất, thang chữ `--t-*` nhân `--fs`, bo góc 5–12px, bóng rất nhẹ, bỏ gradient/đốm màu/kính mờ). Tiêu đề dùng họ serif có hỗ trợ tiếng Việt (Palatino Linotype/Cambria; Georgia bị lỗi dấu nên bỏ).
+- Thay ký tự Unicode bằng SVG nội tuyến cùng nét (nav, nút, sao/fork/vấn đề/tim, bản tin); danh sách dự án thành dạng mục lục; thẻ chỉ số gộp thành một dải; nhãn chữ hoa giãn chữ đổi thành chữ thường.
+- Không đổi logic JS: chỉ đổi chuỗi markup (biểu tượng, nhãn). ID/class giữ nguyên. Đã chụp màn hình sáng, tối, hộp thoại và 390px (không tràn ngang, thanh điều hướng điện thoại nay hiện biểu tượng).
+
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
 - Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).

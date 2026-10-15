@@ -21,7 +21,7 @@ Dashboard tiếng Việt khám phá repository mã nguồn mở trên GitHub. �
 - Không gán nhãn tăng trưởng nếu chưa có hai lần đo cách nhau đủ xa (`growth()` trả `null`).
 - Thay đổi định dạng localStorage phải nâng hậu tố khóa (ví dụ `history-v3`) và có migration.
 - Hàm thuần mới đặt vào `lib.js` kèm test.
-- Cỡ chữ trong CSS viết dạng `calc(Npx*var(--fs))` để người dùng chỉnh được trong Cài đặt.
+- Cỡ chữ trong CSS dùng biến `--t-xs … --t-h1` (đã nhân `--fs`) để người dùng chỉnh được trong Cài đặt; màu qua biến (`--ink`, `--accent`, `--surface`…) có bản sáng/tối. Biểu tượng là SVG nội tuyến (`ICON` trong `app.js`), không dùng ký tự Unicode làm biểu tượng.
 
 ## Chạy và kiểm thử
 

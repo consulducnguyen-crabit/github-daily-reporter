@@ -29,6 +29,20 @@
   const PAGE_SIZE = 30;
 
   const $ = selector => document.querySelector(selector);
+  const svgIcon = (paths, extra = '') => `<svg class="ic ${extra}" viewBox="0 0 24 24" aria-hidden="true">${paths}</svg>`;
+  const ICON = {
+    star: svgIcon('<path d="M12 3.6l2.5 5.4 5.9.7-4.3 4.1 1.1 5.8-5.2-2.9-5.2 2.9 1.1-5.8L3.6 9.7l5.9-.7z"/>', 'ic-fill'),
+    fork: svgIcon('<circle cx="6" cy="5" r="2"/><circle cx="18" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M6 7v1.5A3.5 3.5 0 0 0 9.5 12h5A3.5 3.5 0 0 0 18 8.5V7M12 12v5"/>'),
+    issue: svgIcon('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>'),
+    heart: svgIcon('<path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/>'),
+    heartFill: svgIcon('<path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/>', 'ic-fill'),
+    refresh: svgIcon('<path d="M20 11a8 8 0 0 0-14.5-4M4 5v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4M20 19v-4h-4"/>'),
+    chevron: svgIcon('<path d="M6 9l6 6 6-6"/>'),
+    ext: svgIcon('<path d="M7 17L17 7M8 7h9v9"/>'),
+    trend: svgIcon('<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>'),
+    chart: svgIcon('<path d="M5 20V11M11 20V4M17 20v-6M3 20h18"/>'),
+    check: svgIcon('<path d="M5 12.5l4.5 4.5L19 7.5"/>')
+  };
   const fmt = new Intl.NumberFormat('vi-VN');
 
   /* ---------- Lưu trữ cục bộ ---------- */
@@ -244,7 +258,7 @@
       ? `<span class="repo-tag">${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao sau ${formatSpan(change.spanMs)}</span>`
       : '<span class="repo-tag trending">Chưa đủ dữ liệu lịch sử</span>';
     const topics = (repo.topics || []).slice(0, 3).map(topic => `<span class="repo-tag">${escapeHtml(topicLabel(topic))}</span>`).join('');
-    return `<article class="repo-card"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}${avatar}</div><div><a class="repo-name" href="${escapeHtml(safeUrl(repo.html_url, '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.full_name)} ↗</a><p class="repo-desc" title="${escapeHtml(repo.description || '')}">${escapeHtml(repo.description_vi || repo.description || 'Chưa có mô tả.')}</p><div class="repo-meta"><span><i class="language-dot"></i>${escapeHtml(repo.language || 'Chưa phân loại')}</span><span>⑂ ${humanNumber(repo.forks_count)} nhánh</span><span>● ${humanNumber(repo.open_issues_count)} vấn đề đang mở</span><span>Cập nhật ${formatDate(repo.pushed_at, { day: 'numeric', month: 'short' })}</span></div><div class="repo-tags">${topics}${changeTag}${isRead ? '<span class="repo-tag">✓ Đã đọc</span>' : ''}</div><button type="button" class="repo-detail-button" data-detail="${repo.id}">Đọc phân tích</button></div><div class="repo-side"><span class="stars">★ ${humanNumber(repo.stargazers_count)}</span><button type="button" class="save-button ${isSaved ? 'saved' : ''}" data-save="${repo.id}" aria-label="${isSaved ? 'Bỏ lưu' : 'Lưu'} ${escapeHtml(repo.full_name)}">${isSaved ? '♥' : '♡'}</button></div></article>`;
+    return `<article class="repo-card"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}${avatar}</div><div><a class="repo-name" href="${escapeHtml(safeUrl(repo.html_url, '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.full_name)}</a><p class="repo-desc" title="${escapeHtml(repo.description || '')}">${escapeHtml(repo.description_vi || repo.description || 'Chưa có mô tả.')}</p><div class="repo-meta"><span><i class="language-dot"></i>${escapeHtml(repo.language || 'Chưa phân loại')}</span><span>${ICON.fork}${humanNumber(repo.forks_count)} nhánh</span><span>${ICON.issue}${humanNumber(repo.open_issues_count)} vấn đề đang mở</span><span>Cập nhật ${formatDate(repo.pushed_at, { day: 'numeric', month: 'short' })}</span></div><div class="repo-tags">${topics}${changeTag}${isRead ? `<span class="repo-tag">${ICON.check} Đã đọc</span>` : ''}</div><button type="button" class="repo-detail-button" data-detail="${repo.id}">Đọc phân tích</button></div><div class="repo-side"><span class="stars">${ICON.star}${humanNumber(repo.stargazers_count)}</span><button type="button" class="save-button ${isSaved ? 'saved' : ''}" data-save="${repo.id}" aria-label="${isSaved ? 'Bỏ lưu' : 'Lưu'} ${escapeHtml(repo.full_name)}">${isSaved ? ICON.heartFill : ICON.heart}</button></div></article>`;
   }
 
   function sourceLabel() {
@@ -291,9 +305,9 @@
   }
 
   const PERIODS = {
-    day: { days: 1, label: 'HÔM NAY', text: 'hôm nay' },
-    week: { days: 7, label: '7 NGÀY GẦN ĐÂY', text: '7 ngày' },
-    month: { days: 30, label: '30 NGÀY GẦN ĐÂY', text: '30 ngày' }
+    day: { days: 1, label: 'Hôm nay', text: 'hôm nay' },
+    week: { days: 7, label: '7 ngày gần đây', text: '7 ngày' },
+    month: { days: 30, label: '30 ngày gần đây', text: '30 ngày' }
   };
 
   function renderReport() {
@@ -317,10 +331,10 @@
       ? `Bản tin dựa trên ${state.repositories.length} kho mã từ GitHub, cập nhật lúc ${formatDate(state.fetchedAt, { hour: '2-digit', minute: '2-digit' })}. Trong ${period.text} có ${inPeriod.length} lần đo được lưu. ${growers.length ? 'Mức tăng sao được tính giữa hai lần đo cách nhau đủ xa so với kỳ này.' : 'Chưa có hai lần đo cách nhau đủ xa để kết luận về tăng trưởng trong kỳ này.'}`
       : 'Đang hiển thị dữ liệu minh họa. Bấm “Làm mới dữ liệu” để tạo báo cáo từ API công khai của GitHub.';
 
-    const first = `<div><span class="highlight-icon orange">★</span><span><b>Nhiều sao nhất: ${escapeHtml(topStars?.full_name || 'Chưa có dữ liệu')}</b><small>${topStars ? `${humanNumber(topStars.stargazers_count)} sao tại lần truy vấn gần nhất.` : 'Tải dữ liệu để xem điểm nhấn.'}</small></span></div>`;
+    const first = `<div><span class="highlight-icon">${ICON.star}</span><span><b>Nhiều sao nhất: ${escapeHtml(topStars?.full_name || 'Chưa có dữ liệu')}</b><small>${topStars ? `${humanNumber(topStars.stargazers_count)} sao tại lần truy vấn gần nhất.` : 'Tải dữ liệu để xem điểm nhấn.'}</small></span></div>`;
     const second = growers.length
-      ? `<div><span class="highlight-icon violet">↗</span><span><b>Tăng nhanh nhất: ${escapeHtml(growers[0].repo.full_name)}</b><small>+${fmt.format(growers[0].g.delta)} sao sau ${formatSpan(growers[0].g.spanMs)}${growers.length > 1 ? `. Tiếp theo: ${growers.slice(1).map(item => escapeHtml(item.repo.full_name)).join(', ')}.` : '.'}</small></span></div>`
-      : `<div><span class="highlight-icon violet">⌁</span><span><b>Đang theo dõi ${fmt.format(state.repositories.length)} dự án</b><small>${inPeriod.length ? `${inPeriod.length} lần đo trong kỳ.` : 'Lịch sử tăng trưởng sẽ xuất hiện sau các lần thu thập.'}</small></span></div>`;
+      ? `<div><span class="highlight-icon">${ICON.trend}</span><span><b>Tăng nhanh nhất: ${escapeHtml(growers[0].repo.full_name)}</b><small>+${fmt.format(growers[0].g.delta)} sao sau ${formatSpan(growers[0].g.spanMs)}${growers.length > 1 ? `. Tiếp theo: ${growers.slice(1).map(item => escapeHtml(item.repo.full_name)).join(', ')}.` : '.'}</small></span></div>`
+      : `<div><span class="highlight-icon">${ICON.chart}</span><span><b>Đang theo dõi ${fmt.format(state.repositories.length)} dự án</b><small>${inPeriod.length ? `${inPeriod.length} lần đo trong kỳ.` : 'Lịch sử tăng trưởng sẽ xuất hiện sau các lần thu thập.'}</small></span></div>`;
     $('#report-highlights').innerHTML = first + second;
   }
 
@@ -338,7 +352,7 @@
     const button = $('#refresh');
     const more = $('#load-more');
     button.disabled = true;
-    button.innerHTML = '<span>↻</span> Đang lấy dữ liệu...';
+    button.innerHTML = `${ICON.refresh} Đang lấy dữ liệu...`;
     more.disabled = true;
     try {
       const page = reset ? 1 : state.nextPage;
@@ -364,7 +378,7 @@
       showToast(error.message || 'Không thể kết nối GitHub. Kiểm tra mạng và thử lại.');
     } finally {
       button.disabled = false;
-      button.innerHTML = '<span>↻</span> Làm mới dữ liệu';
+      button.innerHTML = `${ICON.refresh} Làm mới dữ liệu`;
       more.disabled = false;
     }
   }
@@ -442,8 +456,8 @@
     const homepage = safeUrl(repo.homepage);
     const topics = (repo.topics || []).map(topic => `<span class="repo-tag">${escapeHtml(topicLabel(topic))}</span>`).join('') || '<span class="repo-tag">Chủ đề chưa khai báo</span>';
     const change = growthFor(repo, HOUR);
-    const link = (href, label) => `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`;
-    $('#repo-detail').innerHTML = `<div class="detail-header"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}</div><div><h2>${escapeHtml(repo.full_name)}</h2><p>${escapeHtml(repo.description_vi || repo.description || 'Kho mã chưa có mô tả.')}</p></div></div><div class="detail-stats"><div class="detail-stat"><small>Sao</small><b>★ ${humanNumber(repo.stargazers_count)}</b></div><div class="detail-stat"><small>Lượt rẽ nhánh</small><b>${humanNumber(repo.forks_count)}</b></div><div class="detail-stat"><small>Vấn đề đang mở</small><b>${humanNumber(repo.open_issues_count)}</b></div><div class="detail-stat"><small>Giấy phép</small><b>${escapeHtml(license)}</b></div></div><div class="detail-section"><h3>Thông tin quan sát được</h3><p>Ngôn ngữ chính: ${escapeHtml(repo.language || 'chưa khai báo')}. Tạo lúc ${formatDate(repo.created_at)}. Đẩy mã gần nhất ${formatDate(repo.pushed_at)}. ${change ? `Thay đổi so với lần đo cách đây ${formatSpan(change.spanMs)}: ${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao.` : 'Chưa có đủ lần đo lịch sử để tính tăng trưởng.'}</p></div><div class="detail-section"><h3>Chủ đề</h3><div class="detail-topics">${topics}</div></div><div class="detail-section"><h3>Ghi chú cá nhân</h3><textarea class="detail-note" id="repo-note" placeholder="Ghi điều bạn muốn đọc hoặc kiểm tra sau...">${escapeHtml(notes()[repo.full_name] || '')}</textarea><small class="subtle">Ghi chú chỉ được lưu trong trình duyệt này.</small></div><div class="detail-links">${link(repoUrl, 'Kho mã nguồn')}${link(`${repoUrl}/releases`, 'Bản phát hành')}${link(`${repoUrl}/blob/HEAD/README.md`, 'Tài liệu README (nếu có)')}${homepage ? link(homepage, 'Trang dự án') : ''}</div><div class="detail-actions"><button type="button" id="detail-save">${saved ? '♥ Đã lưu' : '♡ Lưu đọc sau'}</button><button type="button" id="detail-read">${read ? '✓ Đã đánh dấu đã đọc' : 'Đánh dấu đã đọc'}</button><button type="button" id="copy-clone">Sao chép lệnh git clone</button><button type="button" id="detail-install">Cách cài an toàn</button></div><p class="subtle">Mô tả và số liệu lấy từ API của GitHub; chưa có phân tích tự động nội dung README. Hãy đọc README và kiểm tra giấy phép trước khi cài.</p>`;
+    const link = (href, label) => `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label} ${ICON.ext}</a>`;
+    $('#repo-detail').innerHTML = `<div class="detail-header"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}</div><div><h2>${escapeHtml(repo.full_name)}</h2><p>${escapeHtml(repo.description_vi || repo.description || 'Kho mã chưa có mô tả.')}</p></div></div><div class="detail-stats"><div class="detail-stat"><small>Sao</small><b>${ICON.star} ${humanNumber(repo.stargazers_count)}</b></div><div class="detail-stat"><small>Lượt rẽ nhánh</small><b>${humanNumber(repo.forks_count)}</b></div><div class="detail-stat"><small>Vấn đề đang mở</small><b>${humanNumber(repo.open_issues_count)}</b></div><div class="detail-stat"><small>Giấy phép</small><b>${escapeHtml(license)}</b></div></div><div class="detail-section"><h3>Thông tin quan sát được</h3><p>Ngôn ngữ chính: ${escapeHtml(repo.language || 'chưa khai báo')}. Tạo lúc ${formatDate(repo.created_at)}. Đẩy mã gần nhất ${formatDate(repo.pushed_at)}. ${change ? `Thay đổi so với lần đo cách đây ${formatSpan(change.spanMs)}: ${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao.` : 'Chưa có đủ lần đo lịch sử để tính tăng trưởng.'}</p></div><div class="detail-section"><h3>Chủ đề</h3><div class="detail-topics">${topics}</div></div><div class="detail-section"><h3>Ghi chú cá nhân</h3><textarea class="detail-note" id="repo-note" placeholder="Ghi điều bạn muốn đọc hoặc kiểm tra sau...">${escapeHtml(notes()[repo.full_name] || '')}</textarea><small class="subtle">Ghi chú chỉ được lưu trong trình duyệt này.</small></div><div class="detail-links">${link(repoUrl, 'Kho mã nguồn')}${link(`${repoUrl}/releases`, 'Bản phát hành')}${link(`${repoUrl}/blob/HEAD/README.md`, 'Tài liệu README (nếu có)')}${homepage ? link(homepage, 'Trang dự án') : ''}</div><div class="detail-actions"><button type="button" id="detail-save">${saved ? 'Đã lưu' : 'Lưu đọc sau'}</button><button type="button" id="detail-read">${read ? 'Đã đánh dấu đã đọc' : 'Đánh dấu đã đọc'}</button><button type="button" id="copy-clone">Sao chép lệnh git clone</button><button type="button" id="detail-install">Cách cài an toàn</button></div><p class="subtle">Mô tả và số liệu lấy từ API của GitHub; chưa có phân tích tự động nội dung README. Hãy đọc README và kiểm tra giấy phép trước khi cài.</p>`;
 
     const summary = document.createElement('section');
     summary.className = 'detail-section readme-section';
@@ -457,12 +471,12 @@
     });
     $('#detail-save').addEventListener('click', event => {
       toggleSaved(repo.id);
-      event.currentTarget.textContent = savedIds().includes(repo.id) ? '♥ Đã lưu' : '♡ Lưu đọc sau';
+      event.currentTarget.textContent = savedIds().includes(repo.id) ? 'Đã lưu' : 'Lưu đọc sau';
     });
     $('#detail-read').addEventListener('click', event => {
       state.readIds = state.readIds.includes(repo.id) ? state.readIds.filter(item => item !== repo.id) : [...state.readIds, repo.id];
       writeStorage(KEYS.read, state.readIds);
-      event.currentTarget.textContent = state.readIds.includes(repo.id) ? '✓ Đã đánh dấu đã đọc' : 'Đánh dấu đã đọc';
+      event.currentTarget.textContent = state.readIds.includes(repo.id) ? 'Đã đánh dấu đã đọc' : 'Đánh dấu đã đọc';
       render();
     });
     $('#copy-clone').addEventListener('click', async () => {
@@ -512,7 +526,7 @@
     const target = $('#readme-content');
     if (!target) return;
     const stillOpen = () => $('#repo-dialog').open && $('#readme-content')?.dataset.repo === String(repo.id);
-    const sourceLink = `<a class="source-link" href="${escapeHtml(safeUrl(repo.html_url, '#') + '/blob/HEAD/README.md')}" target="_blank" rel="noopener noreferrer">Mở README nguồn ↗</a>`;
+    const sourceLink = `<a class="source-link" href="${escapeHtml(safeUrl(repo.html_url, '#') + '/blob/HEAD/README.md')}" target="_blank" rel="noopener noreferrer">Mở README nguồn ${ICON.ext}</a>`;
     try {
       const markdown = readCachedReadme(repo.full_name) ?? (await fetchReadme(repo));
       if (!stillOpen()) return;
@@ -564,7 +578,7 @@
   function resetSpeechUi() {
     state.readQueue = [];
     state.reading = false;
-    $('#speak-button').innerHTML = '▶ &nbsp; Nghe bằng giọng trình duyệt';
+    $('#speak-button').innerHTML = 'Nghe bằng giọng trình duyệt';
     setSpeechControls(false);
   }
 
@@ -665,7 +679,7 @@
     state.readQueue = queue.slice();
     $('#speech-summary').textContent = queue.join(' ');
     state.reading = true;
-    button.innerHTML = '■ &nbsp; Dừng đọc';
+    button.innerHTML = 'Dừng đọc';
     setSpeechControls(true);
     speechStatus(`Đang dùng giọng tiếng Việt ${voice.name}.`, 'success');
     speakNext(session);
@@ -719,7 +733,7 @@
 
   function openSettings() {
     const rate = Number(settings.rate) || 0.92;
-    $('#settings-content').innerHTML = `<div class="eyebrow muted">TÙY CHỈNH TRÊN TRÌNH DUYỆT NÀY</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Cỡ chữ</h3><label>Kích thước chữ <select id="font-scale">${FONT_SCALES.map(([value, label]) => `<option value="${value}" ${value === applyFontScale() ? 'selected' : ''}>${label}</option>`).join('')}</select></label><p>Áp dụng cho toàn bộ giao diện và được nhớ trên trình duyệt này.</p></section><section class="setting-block"><h3>Ảnh nền</h3><label>Hiện ảnh phòng làm việc <input id="bg-enabled" type="checkbox" ${bgSettings.enabled ? 'checked' : ''}></label><label>Tự đổi ảnh sau <select id="bg-interval">${BG_INTERVALS.map(sec => `<option value="${sec}" ${sec === bgSettings.intervalSec ? 'selected' : ''}>${sec < 60 ? `${sec} giây` : `${sec / 60} phút`}</option>`).join('')}</select></label><p>${prefersReducedMotion() ? 'Hệ thống đang bật giảm chuyển động nên ảnh nền đứng yên.' : 'Ảnh được đổi mờ dần; tạm dừng khi bạn chuyển sang tab khác.'}</p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
+    $('#settings-content').innerHTML = `<div class="eyebrow muted">Tùy chỉnh trên trình duyệt này</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Cỡ chữ</h3><label>Kích thước chữ <select id="font-scale">${FONT_SCALES.map(([value, label]) => `<option value="${value}" ${value === applyFontScale() ? 'selected' : ''}>${label}</option>`).join('')}</select></label><p>Áp dụng cho toàn bộ giao diện và được nhớ trên trình duyệt này.</p></section><section class="setting-block"><h3>Ảnh nền</h3><label>Hiện ảnh phòng làm việc <input id="bg-enabled" type="checkbox" ${bgSettings.enabled ? 'checked' : ''}></label><label>Tự đổi ảnh sau <select id="bg-interval">${BG_INTERVALS.map(sec => `<option value="${sec}" ${sec === bgSettings.intervalSec ? 'selected' : ''}>${sec < 60 ? `${sec} giây` : `${sec / 60} phút`}</option>`).join('')}</select></label><p>${prefersReducedMotion() ? 'Hệ thống đang bật giảm chuyển động nên ảnh nền đứng yên.' : 'Ảnh được đổi mờ dần; tạm dừng khi bạn chuyển sang tab khác.'}</p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
     fillVoiceOptions();
     $('#voice-select').addEventListener('change', event => {
       settings.voiceURI = event.target.value;
@@ -886,7 +900,7 @@
 
   /* ---------- Khởi tạo ---------- */
   function setSortLabel(button) {
-    button.innerHTML = `Sắp xếp: ${state.sort === 'stars' ? 'Nhiều sao nhất' : 'Cập nhật gần đây'} <span>⌄</span>`;
+    button.innerHTML = `Sắp xếp: ${state.sort === 'stars' ? 'Nhiều sao nhất' : 'Cập nhật gần đây'} ${ICON.chevron}`;
   }
 
   function applyTheme() {
