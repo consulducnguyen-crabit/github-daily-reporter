@@ -29,6 +29,11 @@
 - Đã thử đủ quy trình cục bộ: 6 câu, 59 giây, 356 KB; trình duyệt tải và phát được.
 - Chưa kiểm chứng bằng tai: chất lượng/phát âm tên repo; cần nghe thử sau khi triển khai.
 
+### Việt hóa giao diện và sửa lỗi sau khi triển khai thật
+- Việt hóa toàn bộ nhãn giao diện (kho mã, lần đo, vấn đề đang mở, bản phát hành, tiêu đề CSV...); chủ đề có bản dịch trong `TOPICS_VI`. Mô tả dự án và README giữ tiếng Anh gốc (đã chọn, có ghi chú trên trang). `app.js` đã hỗ trợ trường `description_vi` nếu sau này có dịch.
+- Sửa font bị rơi về serif sau khi bỏ Google Fonts (thêm font dự phòng cho mọi khai báo) và tương phản panel "Bản tin âm thanh" ở chế độ tối.
+- Bước âm thanh trong `pages.yml` lỗi mã 127 trên runner (thiếu `ffmpeg`, bị `continue-on-error` che): đã thêm cài `ffmpeg` nếu thiếu. Cần chạy lại triển khai để xác nhận có `briefing.mp3`.
+
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
 - Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).

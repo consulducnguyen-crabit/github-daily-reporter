@@ -147,6 +147,11 @@
 
   const TOPICS_VI = { ai: 'trí tuệ nhân tạo', sdk: 'bộ công cụ phát triển', typescript: 'TypeScript', python: 'Python', rust: 'Rust', self_hosted: 'tự lưu trữ', photos: 'quản lý ảnh', photo_management: 'quản lý ảnh', docker: 'Docker', markdown: 'tài liệu Markdown', document_conversion: 'chuyển đổi tài liệu', package_manager: 'quản lý gói phần mềm', vscode: 'Visual Studio Code', developer_tools: 'công cụ dành cho lập trình viên', web: 'ứng dụng web', api: 'giao diện lập trình', database: 'cơ sở dữ liệu', security: 'bảo mật', automation: 'tự động hóa', machine_learning: 'học máy', open_source: 'mã nguồn mở' };
 
+  /** Nhãn chủ đề tiếng Việt nếu đã biết, ngược lại giữ nguyên bản. */
+  function topicLabel(topic) {
+    return TOPICS_VI[String(topic).toLowerCase().replaceAll('-', '_')] || topic;
+  }
+
   function vietnameseSummary(repo, index, formatNumber = String) {
     const topics = (repo.topics || []).map(topic => TOPICS_VI[topic.toLowerCase().replaceAll('-', '_')]).filter(Boolean).slice(0, 2);
     const language = repo.language ? ` Ngôn ngữ chính là ${repo.language}.` : '';
@@ -173,5 +178,5 @@
       .trim();
   }
 
-  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory, numberToVietnamese, vietnameseSummary, briefingSentences, speechText };
+  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory, numberToVietnamese, vietnameseSummary, briefingSentences, speechText, topicLabel };
 });

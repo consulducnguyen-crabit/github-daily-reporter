@@ -13,7 +13,7 @@
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="#overview" aria-label="GitHub Daily, trang tổng quan"><span class="brand-mark">⌘</span><span>GitHub <b>Daily</b><small>OPEN SOURCE RADAR</small></span></a>
+      <a class="brand" href="#overview" aria-label="GitHub Daily, trang tổng quan"><span class="brand-mark">⌘</span><span>GitHub <b>Daily</b><small>RADAR MÃ NGUỒN MỞ</small></span></a>
       <div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
       <nav aria-label="Điều hướng chính">
         <a class="nav-item active" href="#overview"><span>◫</span>Tổng quan</a>
@@ -23,16 +23,16 @@
         <a class="nav-item" href="#insights"><span>⌁</span>Tiêu chí thống kê</a>
         <button class="nav-item nav-button" id="settings-open"><span>⚙</span>Cài đặt</button>
       </nav>
-      <div class="sidebar-bottom"><div class="connection"><span class="status-dot"></span><div><b>GitHub công khai</b><small>Không cần token</small></div></div><div class="sidebar-note">Dữ liệu được lấy trực tiếp từ nguồn mở và có thể chịu giới hạn API.</div></div>
+      <div class="sidebar-bottom"><div class="connection"><span class="status-dot"></span><div><b>GitHub công khai</b><small>Không cần mã truy cập</small></div></div><div class="sidebar-note">Dữ liệu lấy trực tiếp từ nguồn mở và có thể bị giới hạn số lần truy vấn.</div></div>
     </aside>
     <main id="overview" class="main-content">
       <header class="topbar"><div class="breadcrumb">KHÁM PHÁ <span>/</span> TỔNG QUAN</div><div class="top-actions"><span class="date-pill" id="today"></span><button class="icon-button" id="theme-toggle" aria-label="Chuyển giao diện" title="Chuyển giao diện">◐</button><button class="avatar" aria-label="GitHub Daily">GD</button></div></header>
       <section class="welcome"><div><div class="eyebrow"><span class="live-dot"></span> BẢN TIN MÃ NGUỒN MỞ</div><h1><span class="plain" id="greeting">Chào buổi sáng</span>, <span>nhà khám phá.</span></h1><p>Những dự án đáng chú ý trên GitHub, được tuyển chọn cho bạn hôm nay.</p></div><button class="primary-button" id="refresh"><span>↻</span> Làm mới dữ liệu</button></section>
       <section class="stats-grid" aria-label="Tổng quan chỉ số">
-        <article class="stat-card"><div class="stat-top"><span>Đang theo dõi</span><i class="stat-icon orange">◈</i></div><strong id="repo-count">—</strong><small>repository trong danh sách</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Đang theo dõi</span><i class="stat-icon orange">◈</i></div><strong id="repo-count">—</strong><small>kho mã trong danh sách</small></article>
         <article class="stat-card"><div class="stat-top"><span>Tổng sao</span><i class="stat-icon blue">✦</i></div><strong id="star-count">—</strong><small>cộng dồn trong danh sách</small></article>
         <article class="stat-card"><div class="stat-top"><span>Ngôn ngữ hàng đầu</span><i class="stat-icon purple">⌘</i></div><strong class="stat-text" id="top-language">—</strong><small>theo số dự án</small></article>
-        <article class="stat-card"><div class="stat-top"><span>Lịch sử tăng trưởng</span><i class="stat-icon green">↗</i></div><strong class="stat-text" id="growth-value">Đang thu thập</strong><small id="growth-note">chưa đủ snapshot để so sánh</small></article>
+        <article class="stat-card"><div class="stat-top"><span>Lịch sử tăng trưởng</span><i class="stat-icon green">↗</i></div><strong class="stat-text" id="growth-value">Đang thu thập</strong><small id="growth-note">chưa đủ lần đo để so sánh</small></article>
       </section>
       <section class="content-grid">
         <div class="primary-column">
@@ -41,6 +41,7 @@
             <div class="toolbar"><label class="search-box"><span>⌕</span><input id="search" type="search" placeholder="Tìm repository, ngôn ngữ, chủ đề..." aria-label="Tìm trong danh sách dự án"></label><select id="language-filter" aria-label="Lọc theo ngôn ngữ"><option value="">Mọi ngôn ngữ</option></select><button class="filter-button" id="saved-filter" aria-pressed="false">♡ Đã lưu</button></div>
             <div class="advanced-toolbar"><select id="license-filter" aria-label="Lọc theo giấy phép"><option value="">Mọi giấy phép</option></select><label class="min-stars">★ <input id="min-stars" type="number" min="0" step="100" placeholder="Sao tối thiểu" aria-label="Số sao tối thiểu"></label><button class="filter-button" id="clear-filters">Xóa bộ lọc</button></div>
             <p id="filter-status" class="sr-only" role="status" aria-live="polite"></p>
+            <p class="list-note">Tên và mô tả dự án lấy nguyên văn từ GitHub; phần mô tả có thể là tiếng Anh.</p>
             <div id="repo-list" class="repo-list"></div>
             <div class="list-footer"><span id="list-status">Dữ liệu minh họa</span><div class="footer-actions"><button class="text-button" id="export-json">Xuất JSON</button><button class="text-button" id="export-csv">Xuất CSV</button><button class="text-button" id="print-report">In báo cáo</button><button class="text-button" id="load-more">Tải thêm ↗</button></div></div>
           </section>
@@ -48,16 +49,16 @@
           <section class="panel history-panel" id="history"><div class="section-heading"><div><div class="eyebrow muted">LƯU TRÊN TRÌNH DUYỆT NÀY</div><h2>Lịch sử báo cáo</h2></div><button class="text-button" id="clear-history">Xóa lịch sử</button></div><div id="history-list" class="history-list"></div><p class="chart-footnote">Lịch sử chỉ nằm trên thiết bị/trình duyệt này, tối đa 90 ngày.</p></section>
         </div>
         <aside class="right-column">
-          <section class="panel chart-panel" id="languages"><div class="section-heading compact"><div><div class="eyebrow muted">PHÂN BỐ</div><h2>Ngôn ngữ phổ biến</h2></div><span class="mini-icon">▥</span></div><div id="language-chart" class="language-chart"></div><p class="chart-footnote">Dựa trên các repository đang hiển thị.</p></section>
-          <section class="panel methodology-panel" id="insights"><div class="eyebrow muted">TRANSPARENCY</div><h2>Tiêu chí thống kê</h2><div class="criteria-list"><div><b>Tổng sao</b><small>Ảnh chụp hiện thời từ GitHub Search API.</small></div><div><b>Tăng trưởng quan sát được</b><small>Chênh giữa hai snapshot lưu cục bộ, không suy đoán theo kỳ.</small></div><div><b>Hoạt động gần đây</b><small>Ngày push gần nhất là tín hiệu hoạt động, không phải chất lượng.</small></div><div><b>Ngôn ngữ &amp; license</b><small>Metadata do chủ dự án khai báo trên GitHub.</small></div></div></section>
-          <section class="panel assistant-panel"><div class="assistant-glow"></div><div class="section-heading compact"><div><div class="eyebrow muted">TRỢ LÝ CỦA BẠN</div><h2>Bản tin âm thanh</h2></div><span class="speaker-icon">♫</span></div><p>Nghe bằng giọng trình duyệt tiếng Việt bằng giọng đọc có sẵn trên trình duyệt. Lời tóm tắt chi tiết hiện chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.</p><div id="briefing-box" class="briefing-box" hidden><audio id="briefing-player" controls preload="none"></audio><small id="briefing-note" class="subtle"></small></div>
-          <p class="subtle" id="browser-voice-label">Hoặc nghe bằng giọng tiếng Việt cài trên trình duyệt:</p>
+          <section class="panel chart-panel" id="languages"><div class="section-heading compact"><div><div class="eyebrow muted">PHÂN BỐ</div><h2>Ngôn ngữ phổ biến</h2></div><span class="mini-icon">▥</span></div><div id="language-chart" class="language-chart"></div><p class="chart-footnote">Dựa trên các kho mã đang hiển thị.</p></section>
+          <section class="panel methodology-panel" id="insights"><div class="eyebrow muted">MINH BẠCH</div><h2>Tiêu chí thống kê</h2><div class="criteria-list"><div><b>Tổng sao</b><small>Số liệu tại lần truy vấn gần nhất từ API tìm kiếm của GitHub.</small></div><div><b>Tăng trưởng quan sát được</b><small>Chênh lệch giữa hai lần đo lưu cục bộ cách nhau đủ xa; không suy đoán.</small></div><div><b>Hoạt động gần đây</b><small>Ngày đẩy mã gần nhất là tín hiệu hoạt động, không phải chất lượng.</small></div><div><b>Ngôn ngữ &amp; giấy phép</b><small>Thông tin do chủ dự án tự khai báo trên GitHub.</small></div></div></section>
+          <section class="panel assistant-panel"><div class="assistant-glow"></div><div class="section-heading compact"><div><div class="eyebrow muted">TRỢ LÝ CỦA BẠN</div><h2>Bản tin âm thanh</h2></div><span class="speaker-icon">♫</span></div><p>Nghe bản tin tiếng Việt về các dự án nhiều sao nhất. Lời tóm tắt chi tiết hiện chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.</p><div id="briefing-box" class="briefing-box" hidden><audio id="briefing-player" controls preload="none"></audio><small id="briefing-note" class="subtle"></small></div>
+          <p class="subtle" id="browser-voice-label">Hoặc đọc bằng giọng tiếng Việt cài sẵn trong trình duyệt:</p>
           <div class="speech-controls"><button class="secondary-button" id="speak-button">▶ &nbsp; Nghe bằng giọng trình duyệt</button><button class="speech-control" id="speech-pause" disabled>Tạm dừng</button><button class="speech-control" id="speech-resume" disabled>Tiếp tục</button><button class="speech-control" id="speech-stop" disabled>Dừng</button><button class="speech-control speech-test" id="speech-test">Nghe thử tiếng Việt</button></div><p id="speech-status" class="speech-status" aria-live="polite">Trạng thái: chưa phát.</p><p id="speech-summary" class="speech-summary" aria-live="polite">Bản tóm tắt tiếng Việt sẽ hiện ở đây.</p><div class="integration-status"><span class="status-dot gray"></span> Loa Google chưa cấu hình</div></section>
-          <section class="panel install-panel"><div class="install-mark">⌘</div><div class="eyebrow muted">TÌM HIỂU THÊM</div><h2>Mang ý tưởng vào dự án</h2><p>Mở repository gốc để đọc hướng dẫn, kiểm tra giấy phép và tự đánh giá trước khi cài đặt.</p><button id="install-info" class="outline-button full-width">Cách cài đặt an toàn <span>↗</span></button><small class="subtle">Không thực thi lệnh từ trình duyệt.</small></section>
-          <section class="source-note"><span>◉</span><p><b>Dữ liệu minh bạch</b><br>Thống kê được lấy từ GitHub API công khai. Giới hạn API có thể áp dụng.</p></section>
+          <section class="panel install-panel"><div class="install-mark">⌘</div><div class="eyebrow muted">TÌM HIỂU THÊM</div><h2>Mang ý tưởng vào dự án</h2><p>Mở kho mã gốc để đọc hướng dẫn, kiểm tra giấy phép và tự đánh giá trước khi cài đặt.</p><button id="install-info" class="outline-button full-width">Cách cài đặt an toàn <span>↗</span></button><small class="subtle">Không thực thi lệnh từ trình duyệt.</small></section>
+          <section class="source-note"><span>◉</span><p><b>Dữ liệu minh bạch</b><br>Thống kê lấy từ API công khai của GitHub. Có thể bị giới hạn số lần truy vấn.</p></section>
         </aside>
       </section>
-      <footer><span>GitHub Daily <i>•</i> Phiên bản 0.1 MVP</span><span>Giờ Việt Nam · <a href="https://docs.github.com/en/rest" target="_blank" rel="noreferrer">Nguồn dữ liệu GitHub API ↗</a></span></footer>
+      <footer><span>GitHub Daily <i>•</i> Phiên bản 0.2</span><span>Giờ Việt Nam · <a href="https://docs.github.com/en/rest" target="_blank" rel="noreferrer">Nguồn dữ liệu: API của GitHub ↗</a></span></footer>
     </main>
   </div>
   <dialog id="notice-dialog"><form method="dialog"><button class="dialog-close" aria-label="Đóng">×</button><div class="dialog-icon">ⓘ</div><h2 id="dialog-title"></h2><p id="dialog-message"></p><button class="primary-button">Đã hiểu</button></form></dialog>
