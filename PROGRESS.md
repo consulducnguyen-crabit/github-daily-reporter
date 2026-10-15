@@ -1,0 +1,33 @@
+# Tiến độ GitHub Daily
+
+## Đã hoàn thành (phiên bản 0.2)
+
+### Sửa lỗi
+- Nút trong dialog không còn tự đóng dialog (`type="button"`).
+- Dark mode: dialog đọc được.
+- Dữ liệu minh họa không còn bị trộn với kết quả "Tải thêm"; nút chỉ hiện khi nguồn là API.
+- Snapshot chỉ tạo khi làm mới (không tạo khi "Tải thêm"), tối đa 1 bản/6 giờ, chỉ lưu id/sao/fork; tự cắt bớt khi localStorage đầy; migration từ `history-v2`.
+- Nhãn tăng sao ghi rõ khoảng thời gian ("+N sao sau X giờ/ngày"), chỉ hiện khi hai lần đo cách ≥ 1 giờ.
+- Đọc thành tiếng: dùng token phiên để bỏ qua sự kiện `canceled`/`interrupted` và sự kiện của lượt phát cũ.
+- Chặn URL không phải http(s) (`javascript:`...), chống chèn công thức khi xuất CSV.
+- Biểu đồ ngôn ngữ dùng danh sách đang lọc; thẻ "Lịch sử tăng trưởng" hiển thị số lần đo thật; lời chào theo giờ.
+
+### Hiệu năng / chất lượng
+- Lịch sử đọc và lập chỉ mục một lần (cache), tìm kiếm debounce, chỉ dựng lại ô lọc khi dữ liệu đổi.
+- Cache README trong `sessionStorage`; phân biệt lỗi giới hạn tốc độ.
+- `aria-live` chuyển sang vùng trạng thái nhỏ; bỏ handler nội tuyến; thêm CSP; bỏ Google Fonts; dark mode theo `prefers-color-scheme` khi chưa chọn.
+- `app.js` viết lại dạng dễ đọc; `lib.js` + 10 test.
+
+### Thu thập tự động
+- `scripts/collect.mjs` + `collect.yml` (07:30 giờ Việt Nam): lưu `data/latest.json` và `data/history.json` (90 ngày, mỗi ngày một bản). Trang tự dùng dữ liệu này nếu mới hơn cache cục bộ; tăng trưởng 1/7/30 ngày tính từ lịch sử máy chủ.
+- `pages.yml` chạy test trước khi triển khai và sao chép `data/`.
+
+## Việc cần làm tiếp
+- Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
+- Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).
+- Chưa làm (theo `plan.md`): phát loa Google 07:00, tích hợp VS Code/local bridge, phân tích README bằng AI.
+- Chưa có test giao diện tự động; kiểm tra thủ công bằng Playwright đã chạy cho: dữ liệu thu thập, dark dialog, CSV, `javascript:` URL, CSP.
+
+## Lưu ý
+- Chưa commit/push (theo quy tắc global).
+- Ghi chú đã biết: `actions/checkout@v6`, `setup-node@v4` — kiểm tra phiên bản khi workflow chạy lần đầu.

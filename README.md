@@ -1,37 +1,42 @@
 # GitHub Daily
 
-Dashboard tiếng Việt để khám phá repository mã nguồn mở trên GitHub. Phiên bản đầu là ứng dụng tĩnh, không cần cài dependency hay cấu hình token.
+Dashboard tiếng Việt để khám phá repository mã nguồn mở trên GitHub. Ứng dụng tĩnh, không cần cài dependency hay token để chạy.
 
 ## Chạy ứng dụng
 
-Mở `index.html` trong trình duyệt. Để tính năng tải dữ liệu hoạt động ổn định, phục vụ thư mục này bằng máy chủ tĩnh, ví dụ:
+Phục vụ thư mục bằng máy chủ tĩnh (khuyến nghị) hoặc mở `index.html` trực tiếp:
 
 ```sh
 python -m http.server 8000
 ```
 
-Sau đó mở `http://localhost:8000`. Nút **Làm mới dữ liệu** gọi GitHub Search API công khai từ trình duyệt. API công khai có rate limit; dữ liệu khởi đầu trong trang được gắn nhãn minh họa và không phải số liệu hiện thời.
+Mở `http://localhost:8000`. Nút **Làm mới dữ liệu** gọi GitHub Search API công khai từ trình duyệt (có rate limit). Dữ liệu khởi đầu trong trang là minh họa và được gắn nhãn rõ.
 
-## MVP hiện có
+Kiểm thử hàm thuần: `npm test` (Node 20 trở lên).
 
-- Tìm kiếm, lọc ngôn ngữ, sắp xếp, lưu repository trên trình duyệt.
-- Tải repository công khai từ GitHub Search API, mở nguồn GitHub trực tiếp.
-- Bộ lọc theo ngôn ngữ, giấy phép, số sao tối thiểu; sắp xếp theo sao hoặc lần cập nhật.
-- Chi tiết repository, liên kết README/releases, ghi chú cá nhân và đánh dấu đã đọc.
-- Snapshot/lịch sử quan sát, báo cáo 1/7/30 ngày, xuất JSON/CSV và in.
-- Đọc tóm tắt qua Web Speech API của trình duyệt.
-- Cài đặt giọng đọc, chế độ tối và ngày giờ theo múi giờ Việt Nam.
-- Dữ liệu repository gần nhất, ghi chú và lịch sử được lưu cục bộ trên trình duyệt; xóa hoặc xuất từ Cài đặt.
-- Không dùng token, AI trả phí hay backend.
+## Tính năng
+
+- Tìm kiếm, lọc ngôn ngữ/giấy phép/số sao tối thiểu, sắp xếp theo sao hoặc lần cập nhật, lưu repository.
+- Chi tiết repository: README tóm lược, liên kết, ghi chú cá nhân, đánh dấu đã đọc.
+- Báo cáo 1/7/30 ngày: repo nhiều sao nhất và repo tăng sao nhanh nhất (chỉ khi có hai lần đo cách nhau đủ xa).
+- Xuất JSON/CSV, in báo cáo, chế độ tối (theo hệ thống hoặc chọn tay).
+- Đọc tóm tắt bằng giọng tiếng Việt của trình duyệt (cần có giọng vi-VN).
+
+## Dữ liệu thu thập tự động
+
+Workflow `.github/workflows/collect.yml` chạy lúc 07:30 giờ Việt Nam mỗi ngày, ghi `data/latest.json` và `data/history.json` (90 ngày) rồi kích hoạt triển khai Pages. Cần bật **Settings → Actions → General → Workflow permissions → Read and write**. Có thể chạy thủ công bằng *Run workflow*. Khi có dữ liệu này, trang dùng nó nếu mới hơn dữ liệu đã lưu trên trình duyệt, và tăng trưởng được tính từ lịch sử máy chủ.
+
+Chạy thủ công cục bộ: `GITHUB_TOKEN=<token> npm run collect`.
+
+## Quyền riêng tư và bảo mật
+
+- Ghi chú, repo đã lưu, cache và snapshot cục bộ chỉ nằm trong localStorage của trình duyệt; xóa hoặc xuất trong Cài đặt.
+- Trang có Content-Security-Policy, mọi dữ liệu từ GitHub đều được thoát ký tự, chỉ chấp nhận liên kết http(s).
+- Không dùng phông hay script từ bên thứ ba.
 
 ## Giới hạn đã biết
 
-- Snapshot được thu thập khi người dùng chủ động tải dữ liệu và chỉ tồn tại trên trình duyệt đó. Báo cáo ngày/tuần/tháng không đại diện cho dữ liệu máy chủ hay lịch thu thập tự động.
-- Mức chênh sao trên thẻ chỉ so sánh lần đo gần nhất với lần đo trước; không gán nhãn tăng 24 giờ/7 ngày/30 ngày nếu khoảng cách giữa các lần đo không đáp ứng kỳ đó.
-- Danh sách đầu tiên là dữ liệu minh họa. GitHub API có thể giới hạn yêu cầu chưa xác thực.
-- Không có lịch chạy nền, phát loa Google, phân tích AI hoặc tích hợp VS Code/local bridge. Các phần này cần backend/thiết bị/quyền truy cập riêng.
-- TTS phụ thuộc giọng tiếng Việt do hệ điều hành và trình duyệt cung cấp.
-
-## Triển khai
-
-Có thể xuất bản thư mục này lên dịch vụ hosting tĩnh. Nếu triển khai GitHub Pages, cần cấu hình Pages ở phần cài đặt repository. Chưa có workflow tự động vì repo ban đầu chưa có thông tin nhánh phát hành hoặc quyền Actions phù hợp.
+- Danh sách là repo nhiều sao còn hoạt động trong 30 ngày (cộng repo mới tạo khi có thu thập tự động), không phải xếp hạng "xu hướng" tuyệt đối.
+- Mức tăng sao chỉ hiển thị khi có hai lần đo cách nhau tối thiểu 1 giờ (thẻ) hoặc ~80% độ dài kỳ (báo cáo).
+- Tóm tắt tiếng Việt chi tiết chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.
+- Không có phát loa Google, phân tích AI hoặc tích hợp VS Code/local bridge; các phần này cần backend/thiết bị/quyền truy cập riêng (xem `plan.md`).
