@@ -37,6 +37,35 @@ jobs:
           cp index.html lib.js app.js styles.css _site/
           if [ -d data ]; then cp -r data _site/data; fi
           touch _site/.nojekyll
+      # Bản tin âm thanh tiếng Việt (Piper, chạy ngoại tuyến). Lỗi ở bước này không chặn việc triển khai.
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Cache Piper voice
+        uses: actions/cache@v4
+        with:
+          path: voices
+          key: piper-voice-vi_VN-vais1000-medium-v1
+      - name: Build Vietnamese audio briefing
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node scripts/build-briefing.mjs briefing-work
+          if [ ! -f briefing-work/briefing.txt ]; then
+            echo "Chưa có dữ liệu thu thập; bỏ qua bản tin âm thanh."
+            exit 0
+          fi
+          python -m pip install --quiet piper-tts==1.8.0
+          mkdir -p voices
+          base=https://huggingface.co/rhasspy/piper-voices/resolve/main/vi/vi_VN/vais1000/medium
+          [ -f voices/vi_VN-vais1000-medium.onnx ] || curl -fsSL -o voices/vi_VN-vais1000-medium.onnx "$base/vi_VN-vais1000-medium.onnx"
+          [ -f voices/vi_VN-vais1000-medium.onnx.json ] || curl -fsSL -o voices/vi_VN-vais1000-medium.onnx.json "$base/vi_VN-vais1000-medium.onnx.json"
+          echo "ec7c89e2c85f4d1edc24b6120c18aaf1bda614f06b511567eb9c7c0de15e2dab  voices/vi_VN-vais1000-medium.onnx" | sha256sum -c -
+          echo "fafb9da1354ed4b77c31af228ed41fb41cd825c14cffa105454b25e6ae751ee0  voices/vi_VN-vais1000-medium.onnx.json" | sha256sum -c -
+          python -m piper -m voices/vi_VN-vais1000-medium.onnx -i briefing-work/briefing.txt -f briefing-work/briefing.wav --sentence-silence 0.5
+          ffmpeg -y -loglevel error -i briefing-work/briefing.wav -codec:a libmp3lame -b:a 48k -ac 1 _site/briefing.mp3
+          cp briefing-work/briefing.json _site/briefing.json
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:

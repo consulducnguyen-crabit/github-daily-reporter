@@ -17,3 +17,4 @@ body.dark .detail-links a,body.dark .detail-actions button,body.dark .repo-detai
 
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}.welcome h1 .plain{color:inherit}
 body.dark dialog{background:#292522;color:var(--ink);border-color:#423b35}body.dark dialog p,body.dark .detail-header p{color:#b2a69c}body.dark .dialog-close{color:#bcb0a6}body.dark .detail-section,body.dark .detail-header{border-color:#39332e}body.dark .detail-stat small{color:#b2a69c}body.dark .setting-block{border-color:#39332e}body.dark .readme-section p{color:#b2a69c}
+.briefing-box{margin:10px 0 14px}.briefing-box[hidden]{display:none}.briefing-box audio{width:100%;height:36px}body.dark .briefing-box audio{color-scheme:dark}

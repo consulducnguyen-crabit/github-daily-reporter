@@ -22,6 +22,13 @@
 - `scripts/collect.mjs` + `collect.yml` (07:30 giờ Việt Nam): lưu `data/latest.json` và `data/history.json` (90 ngày, mỗi ngày một bản). Trang tự dùng dữ liệu này nếu mới hơn cache cục bộ; tăng trưởng 1/7/30 ngày tính từ lịch sử máy chủ.
 - `pages.yml` chạy test trước khi triển khai và sao chép `data/`.
 
+### Bản tin âm thanh tiếng Việt (Piper)
+- `lib.js` có thêm `numberToVietnamese`, `briefingSentences`, `speechText` (có test); `app.js` dùng chung với script.
+- `scripts/build-briefing.mjs` + bước trong `pages.yml`: tạo `briefing.mp3` và `briefing.json` từ `data/latest.json` (model `vi_VN-vais1000-medium`, CC BY 4.0, ghim SHA-256, cache `voices/`, `continue-on-error`).
+- Trang có trình phát `<audio>` + ghi công; nút giọng trình duyệt giữ làm dự phòng. CSP thêm `media-src 'self'`.
+- Đã thử đủ quy trình cục bộ: 6 câu, 59 giây, 356 KB; trình duyệt tải và phát được.
+- Chưa kiểm chứng bằng tai: chất lượng/phát âm tên repo; cần nghe thử sau khi triển khai.
+
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
 - Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).

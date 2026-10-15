@@ -6,6 +6,7 @@ Dashboard tiếng Việt khám phá repository mã nguồn mở trên GitHub. �
 
 - `index.html`, `styles.css`, `app.js` — giao diện và logic trình duyệt (một IIFE, script cổ điển; không dùng ES module để vẫn mở được bằng `file://`).
 - `lib.js` — hàm thuần dùng chung (UMD): `escapeHtml`, `safeUrl`, `csvCell`, `buildIndex`, `growth`, `upsertSnapshot`, `mergeServerHistory`. Trình duyệt dùng `window.GDLib`; Node dùng `require`.
+- `scripts/build-briefing.mjs` — dựng lời bản tin (`briefing.txt`/`briefing.json`) cho bước tạo âm thanh Piper trong `pages.yml`; `briefing.mp3` chỉ có trong site đã triển khai, không commit.
 - `scripts/collect.mjs` — thu thập dữ liệu hằng ngày -> `data/latest.json`, `data/history.json` (do workflow `collect.yml` chạy, không sửa tay).
 - `tests/lib.test.js` — test cho `lib.js` (`npm test`).
 - `.github/workflows/` — `pages.yml` (test + triển khai), `collect.yml` (cron 00:30 UTC, commit dữ liệu, kích hoạt `pages.yml`).

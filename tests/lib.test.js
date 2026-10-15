@@ -88,3 +88,23 @@ test('mergeServerHistory mỗi ngày một bản và giữ 90 ngày', () => {
   assert.equal(merged.length, 2);
   assert.deepEqual(merged[1].stars, { 1: 7 });
 });
+
+test('numberToVietnamese đọc số thành chữ', () => {
+  const cases = [[0, 'không'], [5, 'năm'], [15, 'mười lăm'], [21, 'hai mươi mốt'], [105, 'một trăm linh năm'], [590, 'năm trăm chín mươi'], [1001, 'một nghìn không trăm linh một'], [17800, 'mười bảy nghìn tám trăm'], [73000, 'bảy mươi ba nghìn'], [1020000, 'một triệu không trăm hai mươi nghìn'], [2500000000, 'hai tỷ năm trăm triệu']];
+  for (const [value, text] of cases) assert.equal(lib.numberToVietnamese(value), text, String(value));
+  assert.equal(lib.numberToVietnamese(-3), '-3');
+});
+
+test('briefingSentences lấy 5 repo nhiều sao nhất và dùng định dạng số được truyền vào', () => {
+  const repos = Array.from({ length: 7 }, (_, i) => ({ id: i, full_name: `o/r${i}`, stargazers_count: 100 * (i + 1), forks_count: 5, language: i === 6 ? 'C++' : null, topics: [] }));
+  const lines = lib.briefingSentences(repos, '16 tháng 10', lib.numberToVietnamese);
+  assert.equal(lines.length, 6);
+  assert.match(lines[0], /^Bản tin GitHub Daily ngày 16 tháng 10\. Có bảy dự án/);
+  assert.match(lines[1], /^Dự án thứ một, o\/r6\./);
+  assert.match(lines[1], /Ngôn ngữ chính là C\+\+\./);
+  assert.match(lines[1], /bảy trăm lượt sao và năm lượt rẽ nhánh/);
+});
+
+test('speechText chuẩn hóa ký hiệu cho giọng đọc', () => {
+  assert.equal(lib.speechText('astral-sh/uv dùng C++ và C#'), 'astral sh uv dùng C cộng cộng và C thăng');
+});

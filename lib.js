@@ -97,5 +97,81 @@
     return kept.sort((a, b) => Date.parse(a.t) - Date.parse(b.t));
   }
 
-  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory };
+
+  /* ---------- Bản tin tiếng Việt ---------- */
+  const DIGITS = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+
+  function readTriple(n, full) {
+    const h = Math.floor(n / 100);
+    const t = Math.floor((n % 100) / 10);
+    const u = n % 10;
+    const parts = [];
+    if (h > 0 || full) parts.push(`${DIGITS[h]} trăm`);
+    if (t === 0) {
+      if (u > 0) parts.push((h > 0 || full ? 'linh ' : '') + DIGITS[u]);
+    } else if (t === 1) {
+      parts.push('mười' + (u === 0 ? '' : ` ${u === 5 ? 'lăm' : DIGITS[u]}`));
+    } else {
+      parts.push(`${DIGITS[t]} mươi` + (u === 0 ? '' : ` ${u === 1 ? 'mốt' : u === 5 ? 'lăm' : DIGITS[u]}`));
+    }
+    return parts.join(' ');
+  }
+
+  /** Đọc số nguyên không âm thành chữ tiếng Việt (tới hàng trăm tỷ); ngoài phạm vi thì trả lại chuỗi số. */
+  function numberToVietnamese(value) {
+    let n = Math.floor(Number(value));
+    if (!Number.isFinite(n) || n < 0) return String(value);
+    if (n === 0) return DIGITS[0];
+    const units = ['', 'nghìn', 'triệu', 'tỷ'];
+    const groups = [];
+    while (n > 0) {
+      groups.push(n % 1000);
+      n = Math.floor(n / 1000);
+    }
+    if (groups.length > units.length) return String(value);
+    const parts = [];
+    for (let i = groups.length - 1; i >= 0; i--) {
+      if (groups[i] === 0) continue;
+      parts.push(readTriple(groups[i], parts.length > 0) + (units[i] ? ` ${units[i]}` : ''));
+    }
+    return parts.join(' ');
+  }
+
+  const KNOWN_SUMMARIES = {
+    'vercel/ai': 'Bộ công cụ giúp lập trình viên xây dựng ứng dụng tích hợp trí tuệ nhân tạo.',
+    'microsoft/markitdown': 'Công cụ chuyển đổi tài liệu và tệp văn phòng sang định dạng Markdown.',
+    'immich-app/immich': 'Giải pháp tự lưu trữ để quản lý ảnh và video cá nhân.',
+    'astral-sh/uv': 'Công cụ quản lý dự án và thư viện Python tốc độ cao.',
+    'continuedev/continue': 'Trợ lý lập trình mã nguồn mở tích hợp với Visual Studio Code và JetBrains.'
+  };
+
+  const TOPICS_VI = { ai: 'trí tuệ nhân tạo', sdk: 'bộ công cụ phát triển', typescript: 'TypeScript', python: 'Python', rust: 'Rust', self_hosted: 'tự lưu trữ', photos: 'quản lý ảnh', photo_management: 'quản lý ảnh', docker: 'Docker', markdown: 'tài liệu Markdown', document_conversion: 'chuyển đổi tài liệu', package_manager: 'quản lý gói phần mềm', vscode: 'Visual Studio Code', developer_tools: 'công cụ dành cho lập trình viên', web: 'ứng dụng web', api: 'giao diện lập trình', database: 'cơ sở dữ liệu', security: 'bảo mật', automation: 'tự động hóa', machine_learning: 'học máy', open_source: 'mã nguồn mở' };
+
+  function vietnameseSummary(repo, index, formatNumber = String) {
+    const topics = (repo.topics || []).map(topic => TOPICS_VI[topic.toLowerCase().replaceAll('-', '_')]).filter(Boolean).slice(0, 2);
+    const language = repo.language ? ` Ngôn ngữ chính là ${repo.language}.` : '';
+    const summary = KNOWN_SUMMARIES[repo.full_name] || (topics.length ? `Dự án có chủ đề ${topics.join(' và ')}.` : 'GitHub chưa cung cấp đủ thông tin tiếng Việt để mô tả chức năng cụ thể.');
+    return `Dự án thứ ${formatNumber(index + 1)}, ${repo.full_name}. ${summary}${language} Hiện có ${formatNumber(repo.stargazers_count)} lượt sao và ${formatNumber(repo.forks_count)} lượt rẽ nhánh.`;
+  }
+
+  /** Các câu của bản tin: câu giới thiệu + 5 dự án nhiều sao nhất. */
+  function briefingSentences(repositories, dateLabel, formatNumber = String) {
+    const top = repositories.slice().sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 5);
+    return [
+      `Bản tin GitHub Daily ngày ${dateLabel}. Có ${formatNumber(repositories.length)} dự án trong danh sách.`,
+      ...top.map((repo, index) => vietnameseSummary(repo, index, formatNumber))
+    ];
+  }
+
+  /** Chuẩn hóa chuỗi cho bộ tổng hợp giọng: tên repo/ngôn ngữ có ký hiệu mà giọng đọc sẽ đọc sai. */
+  function speechText(text) {
+    return text
+      .replace(/C\+\+/g, 'C cộng cộng')
+      .replace(/C#/g, 'C thăng')
+      .replace(/[\/_-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory, numberToVietnamese, vietnameseSummary, briefingSentences, speechText };
 });

@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot } = window.GDLib;
+  const { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, briefingSentences } = window.GDLib;
 
   /* ---------- Dữ liệu khởi đầu (minh họa) ---------- */
   const demoRepositories = [
@@ -401,6 +401,19 @@
     }
   }
 
+
+  /* ---------- Bản tin âm thanh dựng sẵn (Piper, tạo khi triển khai) ---------- */
+  async function loadBriefing() {
+    const data = await fetchJson('briefing.json');
+    if (!data || data.schemaVersion !== 1 || typeof data.audio !== 'string' || !/^[\w.-]+\.mp3$/.test(data.audio)) return;
+    const generated = Date.parse(data.generatedAt);
+    const ageDays = Number.isFinite(generated) ? Math.floor((Date.now() - generated) / DAY) : 0;
+    $('#briefing-player').src = data.audio;
+    $('#briefing-note').textContent = `Bản tin ngày ${formatDate(data.generatedAt)}${ageDays >= 3 ? ` (đã cũ ${ageDays} ngày)` : ''}. ${data.credit || ''}`;
+    if (Array.isArray(data.sentences)) $('#speech-summary').textContent = data.sentences.join(' ');
+    $('#briefing-box').hidden = false;
+  }
+
   /* ---------- Lưu / đã đọc ---------- */
   function toggleSaved(id) {
     const list = savedIds();
@@ -549,7 +562,7 @@
   function resetSpeechUi() {
     state.readQueue = [];
     state.reading = false;
-    $('#speak-button').innerHTML = '▶ &nbsp; Nghe tóm tắt';
+    $('#speak-button').innerHTML = '▶ &nbsp; Nghe bằng giọng trình duyệt';
     setSpeechControls(false);
   }
 
@@ -622,22 +635,6 @@
     }
   }
 
-  const SUMMARIES = {
-    'vercel/ai': 'Bộ công cụ giúp lập trình viên xây dựng ứng dụng tích hợp trí tuệ nhân tạo.',
-    'microsoft/markitdown': 'Công cụ chuyển đổi tài liệu và tệp văn phòng sang định dạng Markdown.',
-    'immich-app/immich': 'Giải pháp tự lưu trữ để quản lý ảnh và video cá nhân.',
-    'astral-sh/uv': 'Công cụ quản lý dự án và thư viện Python tốc độ cao.',
-    'continuedev/continue': 'Trợ lý lập trình mã nguồn mở tích hợp với Visual Studio Code và JetBrains.'
-  };
-  const TOPICS_VI = { ai: 'trí tuệ nhân tạo', sdk: 'bộ công cụ phát triển', typescript: 'TypeScript', python: 'Python', rust: 'Rust', self_hosted: 'tự lưu trữ', photos: 'quản lý ảnh', photo_management: 'quản lý ảnh', docker: 'Docker', markdown: 'tài liệu Markdown', document_conversion: 'chuyển đổi tài liệu', package_manager: 'quản lý gói phần mềm', vscode: 'Visual Studio Code', developer_tools: 'công cụ dành cho lập trình viên', web: 'ứng dụng web', api: 'giao diện lập trình', database: 'cơ sở dữ liệu', security: 'bảo mật', automation: 'tự động hóa', machine_learning: 'học máy', open_source: 'mã nguồn mở' };
-
-  function vietnameseSummary(repo, index) {
-    const topics = (repo.topics || []).map(topic => TOPICS_VI[topic.toLowerCase().replaceAll('-', '_')]).filter(Boolean).slice(0, 2);
-    const language = repo.language ? ` Ngôn ngữ chính là ${repo.language}.` : '';
-    const summary = SUMMARIES[repo.full_name] || (topics.length ? `Dự án có chủ đề ${topics.join(' và ')}.` : 'GitHub chưa cung cấp đủ thông tin tiếng Việt để mô tả chức năng cụ thể.');
-    return `Dự án thứ ${index + 1}, ${repo.full_name}. ${summary}${language} Hiện có ${fmt.format(repo.stargazers_count)} lượt sao và ${fmt.format(repo.forks_count)} lượt rẽ nhánh.`;
-  }
-
   async function startSpeech() {
     if (!('speechSynthesis' in window)) {
       openNotice('Trình duyệt chưa hỗ trợ đọc thành tiếng', 'Thử phiên bản mới của Chrome, Edge hoặc Safari.');
@@ -662,9 +659,7 @@
     const session = ++speechSession;
     speechSynthesis.cancel();
     speechSynthesis.resume();
-    const top = state.repositories.slice().sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 5);
-    const intro = `Bản tin GitHub Daily ngày ${formatDate(new Date(), { day: 'numeric', month: 'long' })}. Có ${state.repositories.length} dự án trong danh sách.`;
-    const queue = [intro, ...top.map(vietnameseSummary)];
+    const queue = briefingSentences(state.repositories, formatDate(new Date(), { day: 'numeric', month: 'long' }), value => fmt.format(value));
     state.readQueue = queue.slice();
     $('#speech-summary').textContent = queue.join(' ');
     state.reading = true;
@@ -832,4 +827,5 @@
   renderFilterOptions();
   render();
   loadCollectedData();
+  loadBriefing();
 })();

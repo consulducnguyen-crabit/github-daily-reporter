@@ -20,13 +20,21 @@ Kiểm thử hàm thuần: `npm test` (Node 20 trở lên).
 - Chi tiết repository: README tóm lược, liên kết, ghi chú cá nhân, đánh dấu đã đọc.
 - Báo cáo 1/7/30 ngày: repo nhiều sao nhất và repo tăng sao nhanh nhất (chỉ khi có hai lần đo cách nhau đủ xa).
 - Xuất JSON/CSV, in báo cáo, chế độ tối (theo hệ thống hoặc chọn tay).
-- Đọc tóm tắt bằng giọng tiếng Việt của trình duyệt (cần có giọng vi-VN).
+- Bản tin âm thanh tiếng Việt dựng sẵn (`briefing.mp3`, tạo khi triển khai bằng Piper, nghe được trên mọi trình duyệt/điện thoại). Có thêm nút đọc bằng giọng vi-VN cài trên trình duyệt (dự phòng).
 
 ## Dữ liệu thu thập tự động
 
 Workflow `.github/workflows/collect.yml` chạy lúc 07:30 giờ Việt Nam mỗi ngày, ghi `data/latest.json` và `data/history.json` (90 ngày) rồi kích hoạt triển khai Pages. Cần bật **Settings → Actions → General → Workflow permissions → Read and write**. Có thể chạy thủ công bằng *Run workflow*. Khi có dữ liệu này, trang dùng nó nếu mới hơn dữ liệu đã lưu trên trình duyệt, và tăng trưởng được tính từ lịch sử máy chủ.
 
 Chạy thủ công cục bộ: `GITHUB_TOKEN=<token> npm run collect`.
+
+## Bản tin âm thanh
+
+Khi triển khai (`pages.yml`), nếu đã có `data/latest.json` thì workflow dựng lời bản tin (số đọc thành chữ), tổng hợp giọng bằng [Piper](https://github.com/OHF-Voice/piper1-gpl) với model `vi_VN-vais1000-medium` (kiểm tra SHA-256), nén thành `briefing.mp3` (~350 KB, ~1 phút) và đưa vào site. Nếu bước này lỗi, site vẫn được triển khai bình thường, chỉ không có trình phát. File âm thanh không được commit vào repo.
+
+Ghi công: giọng tổng hợp từ model Piper `vi_VN-vais1000` huấn luyện trên bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0. Lời tóm tắt chi tiết hiện chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.
+
+Thử cục bộ: `node scripts/build-briefing.mjs briefing-work`, rồi `python -m piper -m <model.onnx> -i briefing-work/briefing.txt -f briefing-work/briefing.wav`.
 
 ## Quyền riêng tư và bảo mật
 
