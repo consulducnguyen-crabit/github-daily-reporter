@@ -19,6 +19,7 @@ Kiểm thử hàm thuần: `npm test` (Node 20 trở lên).
 - Tìm kiếm, lọc ngôn ngữ/giấy phép/số sao tối thiểu, sắp xếp theo sao hoặc lần cập nhật, lưu repository.
 - Chi tiết repository: README tóm lược, liên kết, ghi chú cá nhân, đánh dấu đã đọc.
 - Báo cáo 1/7/30 ngày: repo nhiều sao nhất và repo tăng sao nhanh nhất (chỉ khi có hai lần đo cách nhau đủ xa).
+- Ảnh nền phòng làm việc tự đổi mờ dần mỗi 1 phút (tùy chỉnh 30 giây/1 phút/5 phút hoặc tắt trong Cài đặt; tạm dừng khi chuyển tab và đứng yên nếu hệ thống bật giảm chuyển động).
 - Xuất JSON/CSV, in báo cáo, chế độ tối (theo hệ thống hoặc chọn tay).
 - Bản tin âm thanh tiếng Việt dựng sẵn (`briefing.mp3`, tạo khi triển khai bằng Piper, nghe được trên mọi trình duyệt/điện thoại). Có thêm nút đọc bằng giọng vi-VN cài trên trình duyệt (dự phòng).
 
@@ -35,6 +36,10 @@ Khi triển khai (`pages.yml`), nếu đã có `data/latest.json` thì workflow 
 Ghi công: giọng tổng hợp từ model Piper `vi_VN-vais1000` huấn luyện trên bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0. Lời tóm tắt chi tiết hiện chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.
 
 Thử cục bộ: `node scripts/build-briefing.mjs briefing-work`, rồi `python -m piper -m <model.onnx> -i briefing-work/briefing.txt -f briefing-work/briefing.wav`.
+
+## Ảnh nền
+
+8 ảnh phòng làm việc nằm trong `assets/bg/` (WebP 1920px, tổng khoảng 0,9 MB), danh sách và thông tin tác giả ở `assets/bg/backgrounds.json`. Tất cả có giấy phép **CC0** (phạm vi công cộng) theo dữ liệu trên Wikimedia Commons, nguồn gốc từ Unsplash trước khi đổi giấy phép; tác giả được ghi công ở chân trang cho từng ảnh đang hiện. Muốn thêm ảnh: thêm file `.webp` vào `assets/bg/` và một mục vào `backgrounds.json` (chỉ nhận tên file dạng `[\w.-]+.webp`).
 
 ## Quyền riêng tư và bảo mật
 

@@ -34,6 +34,11 @@
 - Sửa font bị rơi về serif sau khi bỏ Google Fonts (thêm font dự phòng cho mọi khai báo) và tương phản panel "Bản tin âm thanh" ở chế độ tối.
 - Bước âm thanh trong `pages.yml` lỗi mã 127 trên runner (thiếu `ffmpeg`, bị `continue-on-error` che): đã thêm cài `ffmpeg` nếu thiếu. Cần chạy lại triển khai để xác nhận có `briefing.mp3`.
 
+### Ảnh nền phòng làm việc
+- 8 ảnh CC0 (Wikimedia Commons, kiểm tra giấy phép qua API) trong `assets/bg/`, hai lớp crossfade 1,6 giây, đổi mỗi 60 giây (30 giây/5 phút/tắt trong Cài đặt, lưu ở localStorage `github-daily-background`), tải trước ảnh kế, tạm dừng khi tab ẩn, đứng yên nếu `prefers-reduced-motion`.
+- Lớp phủ mờ + kính mờ cho thanh trên/lời chào/chân trang để chữ vẫn đọc được; đã chụp màn hình sáng và tối, đã thử chu kỳ 30 giây (3 ảnh khác nhau liên tiếp) và công tắc tắt/bật.
+- `pages.yml` sao chép `assets/`. Ghi công hiển thị ở chân trang.
+
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
 - Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).

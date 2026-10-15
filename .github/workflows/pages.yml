@@ -35,6 +35,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html lib.js app.js styles.css _site/
+          cp -r assets _site/assets
           if [ -d data ]; then cp -r data _site/data; fi
           touch _site/.nojekyll
       # Bản tin âm thanh tiếng Việt (Piper, chạy ngoại tuyến). Lỗi ở bước này không chặn việc triển khai.

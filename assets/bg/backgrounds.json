@@ -1,0 +1,61 @@
+{
+ "schemaVersion": 1,
+ "images": [
+  {
+   "file": "desk-01.webp",
+   "title": "Clean minimalist office",
+   "author": "Roman Bozhko",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Clean_minimalist_office_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-02.webp",
+   "title": "Desk Setup",
+   "author": "Luke Chesser",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Desk_Setup_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-03.webp",
+   "title": "Winter Workspace",
+   "author": "Norbert Levajsics",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Winter_Workspace_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-04.webp",
+   "title": "Workspace 1",
+   "author": "Pineapple Supply Co.",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Workspace_1_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-05.webp",
+   "title": "Coding workstation",
+   "author": "Farzad Nazifi",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Coding_workstation_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-06.webp",
+   "title": "Laptop on a neat desk",
+   "author": "Norbert Levajsics",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Laptop_on_a_neat_desk_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-07.webp",
+   "title": "Apple computer monitors desk",
+   "author": "Tran Mau Tri Tam",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Apple_computer_monitors_desk_(Unsplash).jpg"
+  },
+  {
+   "file": "desk-08.webp",
+   "title": "My working space",
+   "author": "Vadim Sherbakov",
+   "license": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:My_working_space_(Unsplash).jpg"
+  }
+ ]
+}

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="bg-stage" aria-hidden="true"><div class="bg-layer" id="bg-a"></div><div class="bg-layer" id="bg-b"></div><div class="bg-veil"></div></div>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <div class="app-shell">
     <aside class="sidebar">
@@ -58,7 +59,7 @@
           <section class="source-note"><span>◉</span><p><b>Dữ liệu minh bạch</b><br>Thống kê lấy từ API công khai của GitHub. Có thể bị giới hạn số lần truy vấn.</p></section>
         </aside>
       </section>
-      <footer><span>GitHub Daily <i>•</i> Phiên bản 0.2</span><span>Giờ Việt Nam · <a href="https://docs.github.com/en/rest" target="_blank" rel="noreferrer">Nguồn dữ liệu: API của GitHub ↗</a></span></footer>
+      <footer><span>GitHub Daily <i>•</i> Phiên bản 0.2</span><span id="bg-credit"></span><span>Giờ Việt Nam · <a href="https://docs.github.com/en/rest" target="_blank" rel="noreferrer">Nguồn dữ liệu: API của GitHub ↗</a></span></footer>
     </main>
   </div>
   <dialog id="notice-dialog"><form method="dialog"><button class="dialog-close" aria-label="Đóng">×</button><div class="dialog-icon">ⓘ</div><h2 id="dialog-title"></h2><p id="dialog-message"></p><button class="primary-button">Đã hiểu</button></form></dialog>

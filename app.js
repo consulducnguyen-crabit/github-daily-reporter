@@ -20,7 +20,8 @@
     notes: 'github-daily-notes',
     read: 'github-daily-read',
     theme: 'github-daily-theme',
-    speech: 'github-daily-speech'
+    speech: 'github-daily-speech',
+    background: 'github-daily-background'
   };
   const README_PREFIX = 'github-daily-readme:';
   const TZ = 'Asia/Ho_Chi_Minh';
@@ -717,7 +718,7 @@
 
   function openSettings() {
     const rate = Number(settings.rate) || 0.92;
-    $('#settings-content').innerHTML = `<div class="eyebrow muted">TÙY CHỈNH TRÊN TRÌNH DUYỆT NÀY</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
+    $('#settings-content').innerHTML = `<div class="eyebrow muted">TÙY CHỈNH TRÊN TRÌNH DUYỆT NÀY</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Ảnh nền</h3><label>Hiện ảnh phòng làm việc <input id="bg-enabled" type="checkbox" ${bgSettings.enabled ? 'checked' : ''}></label><label>Tự đổi ảnh sau <select id="bg-interval">${BG_INTERVALS.map(sec => `<option value="${sec}" ${sec === bgSettings.intervalSec ? 'selected' : ''}>${sec < 60 ? `${sec} giây` : `${sec / 60} phút`}</option>`).join('')}</select></label><p>${prefersReducedMotion() ? 'Hệ thống đang bật giảm chuyển động nên ảnh nền đứng yên.' : 'Ảnh được đổi mờ dần; tạm dừng khi bạn chuyển sang tab khác.'}</p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
     fillVoiceOptions();
     $('#voice-select').addEventListener('change', event => {
       settings.voiceURI = event.target.value;
@@ -728,6 +729,16 @@
       settings.rate = Number(event.target.value);
       writeStorage(KEYS.speech, settings);
     });
+    $('#bg-enabled').addEventListener('change', event => {
+      bgSettings.enabled = event.target.checked;
+      writeStorage(KEYS.background, bgSettings);
+      applyBackground();
+    });
+    $('#bg-interval').addEventListener('change', event => {
+      bgSettings.intervalSec = Number(event.target.value);
+      writeStorage(KEYS.background, bgSettings);
+      startBackgroundTimer();
+    });
     $('#settings-export').addEventListener('click', () => download(`github-daily-local-${dateKey()}.json`, JSON.stringify({ repositories: state.repositories, history: historyRecords(), saved: savedIds(), notes: notes() }, null, 2), 'application/json;charset=utf-8'));
     $('#settings-clear').addEventListener('click', () => {
       if (!confirm('Xóa dữ liệu GitHub Daily đã lưu trên trình duyệt này?')) return;
@@ -736,6 +747,100 @@
       location.reload();
     });
     $('#settings-dialog').showModal();
+  }
+
+  /* ---------- Ảnh nền phòng làm việc (tự đổi theo chu kỳ) ---------- */
+  const BG_INTERVALS = [30, 60, 300];
+  const bgSettings = (() => {
+    const stored = readStorage(KEYS.background, {});
+    return { enabled: stored.enabled !== false, intervalSec: BG_INTERVALS.includes(stored.intervalSec) ? stored.intervalSec : 60 };
+  })();
+  const bg = { images: [], order: [], position: -1, timer: null, front: 'bg-a', token: 0 };
+
+  const prefersReducedMotion = () => Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+
+  function shuffled(count, avoidFirst) {
+    const list = Array.from({ length: count }, (_, i) => i);
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    if (count > 1 && list[0] === avoidFirst) list.push(list.shift());
+    return list;
+  }
+
+  function nextBackgroundIndex() {
+    bg.position++;
+    if (bg.position >= bg.order.length) {
+      bg.order = shuffled(bg.images.length, bg.order[bg.order.length - 1]);
+      bg.position = 0;
+    }
+    return bg.order[bg.position];
+  }
+
+  function showBackground() {
+    if (!bg.images.length || !bgSettings.enabled) return;
+    const image = bg.images[nextBackgroundIndex()];
+    const token = ++bg.token;
+    const probe = new Image();
+    probe.onload = () => {
+      if (token !== bg.token || !bgSettings.enabled) return;
+      const back = bg.front === 'bg-a' ? 'bg-b' : 'bg-a';
+      $(`#${back}`).style.backgroundImage = `url("assets/bg/${image.file}")`;
+      $(`#${back}`).classList.add('show');
+      $(`#${bg.front}`).classList.remove('show');
+      bg.front = back;
+      renderBackgroundCredit(image);
+    };
+    probe.onerror = () => { if (token === bg.token) showBackground(); };
+    probe.src = `assets/bg/${image.file}`;
+  }
+
+  function renderBackgroundCredit(image) {
+    const credit = $('#bg-credit');
+    credit.textContent = '';
+    if (!image) return;
+    const link = document.createElement('a');
+    link.href = safeUrl(image.source, '#');
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = image.title;
+    credit.append('Ảnh nền: ', link, ` · ${image.author} · ${image.license}`);
+  }
+
+  function stopBackgroundTimer() {
+    clearInterval(bg.timer);
+    bg.timer = null;
+  }
+
+  function startBackgroundTimer() {
+    stopBackgroundTimer();
+    // Người dùng ưu tiên giảm chuyển động: chỉ hiện một ảnh cố định, không tự đổi.
+    if (!bgSettings.enabled || prefersReducedMotion() || bg.images.length < 2 || document.hidden) return;
+    bg.timer = setInterval(showBackground, bgSettings.intervalSec * 1000);
+  }
+
+  function applyBackground() {
+    document.body.classList.toggle('no-bg', !bgSettings.enabled);
+    bg.token++;
+    if (!bgSettings.enabled) {
+      stopBackgroundTimer();
+      renderBackgroundCredit(null);
+      ['bg-a', 'bg-b'].forEach(id => { $(`#${id}`).classList.remove('show'); $(`#${id}`).style.backgroundImage = ''; });
+      return;
+    }
+    if (!bg.images.length) return;
+    showBackground();
+    startBackgroundTimer();
+  }
+
+  async function initBackground() {
+    const data = await fetchJson('assets/bg/backgrounds.json');
+    if (!data || !Array.isArray(data.images)) return;
+    bg.images = data.images.filter(item => item && /^[\w.-]+\.webp$/.test(item.file) && typeof item.title === 'string');
+    if (!bg.images.length) return;
+    document.addEventListener('visibilitychange', () => (document.hidden ? stopBackgroundTimer() : startBackgroundTimer()));
+    applyBackground();
   }
 
   /* ---------- Khởi tạo ---------- */
@@ -828,4 +933,5 @@
   render();
   loadCollectedData();
   loadBriefing();
+  initBackground();
 })();

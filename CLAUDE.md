@@ -8,6 +8,7 @@ Dashboard tiếng Việt khám phá repository mã nguồn mở trên GitHub. �
 - `lib.js` — hàm thuần dùng chung (UMD): `escapeHtml`, `safeUrl`, `csvCell`, `buildIndex`, `growth`, `upsertSnapshot`, `mergeServerHistory`. Trình duyệt dùng `window.GDLib`; Node dùng `require`.
 - `scripts/build-briefing.mjs` — dựng lời bản tin (`briefing.txt`/`briefing.json`) cho bước tạo âm thanh Piper trong `pages.yml`; `briefing.mp3` chỉ có trong site đã triển khai, không commit.
 - `scripts/collect.mjs` — thu thập dữ liệu hằng ngày -> `data/latest.json`, `data/history.json` (do workflow `collect.yml` chạy, không sửa tay).
+- `assets/bg/` — ảnh nền CC0 + `backgrounds.json` (tác giả, giấy phép, nguồn); chỉ thêm ảnh có giấy phép cho phép phân phối lại và ghi công.
 - `tests/lib.test.js` — test cho `lib.js` (`npm test`).
 - `.github/workflows/` — `pages.yml` (test + triển khai), `collect.yml` (cron 00:30 UTC, commit dữ liệu, kích hoạt `pages.yml`).
 - `plan.md` — kế hoạch dài hạn; `README.md` — mô tả người dùng; `PROGRESS.md` — tiến độ.
