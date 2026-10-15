@@ -19,7 +19,7 @@
 - `app.js` viết lại dạng dễ đọc; `lib.js` + 10 test.
 
 ### Thu thập tự động
-- `scripts/collect.mjs` + `collect.yml` (07:30 giờ Việt Nam): lưu `data/latest.json` và `data/history.json` (90 ngày, mỗi ngày một bản). Trang tự dùng dữ liệu này nếu mới hơn cache cục bộ; tăng trưởng 1/7/30 ngày tính từ lịch sử máy chủ.
+- `scripts/collect.mjs` + `collect.yml` (06:00 giờ Việt Nam): lưu `data/latest.json` và `data/history.json` (90 ngày, mỗi ngày một bản). Trang tự dùng dữ liệu này nếu mới hơn cache cục bộ; tăng trưởng 1/7/30 ngày tính từ lịch sử máy chủ.
 - `pages.yml` chạy test trước khi triển khai và sao chép `data/`.
 
 ### Bản tin âm thanh tiếng Việt (Piper)
@@ -47,6 +47,11 @@
 - Viết lại toàn bộ `styles.css` (biến màu giấy ấm/than, 1 màu nhấn cam đất, thang chữ `--t-*` nhân `--fs`, bo góc 5–12px, bóng rất nhẹ, bỏ gradient/đốm màu/kính mờ). Tiêu đề dùng họ serif có hỗ trợ tiếng Việt (Palatino Linotype/Cambria; Georgia bị lỗi dấu nên bỏ).
 - Thay ký tự Unicode bằng SVG nội tuyến cùng nét (nav, nút, sao/fork/vấn đề/tim, bản tin); danh sách dự án thành dạng mục lục; thẻ chỉ số gộp thành một dải; nhãn chữ hoa giãn chữ đổi thành chữ thường.
 - Không đổi logic JS: chỉ đổi chuỗi markup (biểu tượng, nhãn). ID/class giữ nguyên. Đã chụp màn hình sáng, tối, hộp thoại và 390px (không tràn ngang, thanh điều hướng điện thoại nay hiện biểu tượng).
+
+### Phát lên loa Google Home (Living Room Speaker)
+- Chọn Home Assistant làm nơi điều khiển loa; thu thập dời sang 06:00 giờ Việt Nam (`cron 0 23 * * *`) để bản tin sẵn sàng trước 07:00.
+- `docs/home-assistant.md`: cảm biến REST đọc `briefing.json`, automation 07:00 (chỉ phát nếu bản tin là của hôm nay, đặt âm lượng, `media_player.play_media`), cách kiểm tra và xử lý lỗi.
+- Đã kiểm tra: URL mp3 công khai trả `200`, `Content-Type: audio/mp3`, `generatedAt` dạng ISO. **Chưa chạy thử trên Home Assistant thật** (không có trong môi trường này).
 
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.

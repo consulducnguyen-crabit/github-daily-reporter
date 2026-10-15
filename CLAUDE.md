@@ -10,7 +10,7 @@ Dashboard tiếng Việt khám phá repository mã nguồn mở trên GitHub. �
 - `scripts/collect.mjs` — thu thập dữ liệu hằng ngày -> `data/latest.json`, `data/history.json` (do workflow `collect.yml` chạy, không sửa tay).
 - `assets/bg/` — ảnh nền CC0 + `backgrounds.json` (tác giả, giấy phép, nguồn); chỉ thêm ảnh có giấy phép cho phép phân phối lại và ghi công.
 - `tests/lib.test.js` — test cho `lib.js` (`npm test`).
-- `.github/workflows/` — `pages.yml` (test + triển khai), `collect.yml` (cron 00:30 UTC, commit dữ liệu, kích hoạt `pages.yml`).
+- `.github/workflows/` — `pages.yml` (test + triển khai), `collect.yml` (cron 23:00 UTC = 06:00 giờ Việt Nam, commit dữ liệu, kích hoạt `pages.yml`).
 - `plan.md` — kế hoạch dài hạn; `README.md` — mô tả người dùng; `PROGRESS.md` — tiến độ.
 
 ## Quy ước

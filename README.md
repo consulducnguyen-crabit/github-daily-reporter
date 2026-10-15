@@ -26,7 +26,7 @@ Kiểm thử hàm thuần: `npm test` (Node 20 trở lên).
 
 ## Dữ liệu thu thập tự động
 
-Workflow `.github/workflows/collect.yml` chạy lúc 07:30 giờ Việt Nam mỗi ngày, ghi `data/latest.json` và `data/history.json` (90 ngày) rồi kích hoạt triển khai Pages. Cần bật **Settings → Actions → General → Workflow permissions → Read and write**. Có thể chạy thủ công bằng *Run workflow*. Khi có dữ liệu này, trang dùng nó nếu mới hơn dữ liệu đã lưu trên trình duyệt, và tăng trưởng được tính từ lịch sử máy chủ.
+Workflow `.github/workflows/collect.yml` chạy lúc 06:00 giờ Việt Nam mỗi ngày, ghi `data/latest.json` và `data/history.json` (90 ngày) rồi kích hoạt triển khai Pages. Cần bật **Settings → Actions → General → Workflow permissions → Read and write**. Có thể chạy thủ công bằng *Run workflow*. Khi có dữ liệu này, trang dùng nó nếu mới hơn dữ liệu đã lưu trên trình duyệt, và tăng trưởng được tính từ lịch sử máy chủ.
 
 Chạy thủ công cục bộ: `GITHUB_TOKEN=<token> npm run collect`.
 
@@ -41,6 +41,10 @@ Thử cục bộ: `node scripts/build-briefing.mjs briefing-work`, rồi `python
 ## Ảnh nền
 
 8 ảnh phòng làm việc nằm trong `assets/bg/` (WebP 1920px, tổng khoảng 0,9 MB), danh sách và thông tin tác giả ở `assets/bg/backgrounds.json`. Tất cả có giấy phép **CC0** (phạm vi công cộng) theo dữ liệu trên Wikimedia Commons, nguồn gốc từ Unsplash trước khi đổi giấy phép; tác giả được ghi công ở chân trang cho từng ảnh đang hiện. Muốn thêm ảnh: thêm file `.webp` vào `assets/bg/` và một mục vào `backgrounds.json` (chỉ nhận tên file dạng `[\w.-]+.webp`).
+
+## Phát lên loa Google Home
+
+Loa nằm trong mạng nhà nên GitHub Actions không điều khiển được; dùng Home Assistant (Google Cast) để phát `briefing.mp3` lúc 07:00 hằng ngày. Dữ liệu được thu thập lúc 06:00 để bản tin kịp sẵn sàng. Hướng dẫn cấu hình, kiểm tra và xử lý lỗi: [docs/home-assistant.md](docs/home-assistant.md).
 
 ## Quyền riêng tư và bảo mật
 
