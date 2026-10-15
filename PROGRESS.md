@@ -39,6 +39,10 @@
 - Lớp phủ mờ + kính mờ cho thanh trên/lời chào/chân trang để chữ vẫn đọc được; đã chụp màn hình sáng và tối, đã thử chu kỳ 30 giây (3 ảnh khác nhau liên tiếp) và công tắc tắt/bật.
 - `pages.yml` sao chép `assets/`. Ghi công hiển thị ở chân trang.
 
+### Cỡ chữ và nút cuộn
+- Mọi `font-size`/`font` trong `styles.css` dùng `calc(Npx*var(--fs))`; `--fs` mặc định 1,15 (chữ lớn hơn ~15%), chọn 1 / 1,15 / 1,3 / 1,45 trong Cài đặt (khóa localStorage `github-daily-fontscale`). Quy ước: khai báo cỡ chữ mới phải viết dạng `calc(Npx*var(--fs))`.
+- Hai nút nổi tròn ↑/↓ (hiện khi cuộn quá 300px / còn cách đáy hơn 300px), tôn trọng giảm chuyển động, ẩn khi in. Đã thử cuộn lên/xuống, chữ 1,45 và màn hình 390px (không tràn ngang).
+
 ## Việc cần làm tiếp
 - Chạy `collect.yml` lần đầu bằng **workflow_dispatch** sau khi đẩy code (cần Actions bật quyền ghi: Settings → Actions → Workflow permissions → Read and write). Trước đó `data/` chưa tồn tại và trang dùng API trực tiếp.
 - Tóm tắt tiếng Việt chi tiết mới có cho 5 repo mẫu (quyết định: giữ mẫu hiện tại, không dùng LLM).

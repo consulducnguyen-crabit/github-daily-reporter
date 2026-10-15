@@ -21,7 +21,8 @@
     read: 'github-daily-read',
     theme: 'github-daily-theme',
     speech: 'github-daily-speech',
-    background: 'github-daily-background'
+    background: 'github-daily-background',
+    fontScale: 'github-daily-fontscale'
   };
   const README_PREFIX = 'github-daily-readme:';
   const TZ = 'Asia/Ho_Chi_Minh';
@@ -718,7 +719,7 @@
 
   function openSettings() {
     const rate = Number(settings.rate) || 0.92;
-    $('#settings-content').innerHTML = `<div class="eyebrow muted">TÙY CHỈNH TRÊN TRÌNH DUYỆT NÀY</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Ảnh nền</h3><label>Hiện ảnh phòng làm việc <input id="bg-enabled" type="checkbox" ${bgSettings.enabled ? 'checked' : ''}></label><label>Tự đổi ảnh sau <select id="bg-interval">${BG_INTERVALS.map(sec => `<option value="${sec}" ${sec === bgSettings.intervalSec ? 'selected' : ''}>${sec < 60 ? `${sec} giây` : `${sec / 60} phút`}</option>`).join('')}</select></label><p>${prefersReducedMotion() ? 'Hệ thống đang bật giảm chuyển động nên ảnh nền đứng yên.' : 'Ảnh được đổi mờ dần; tạm dừng khi bạn chuyển sang tab khác.'}</p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
+    $('#settings-content').innerHTML = `<div class="eyebrow muted">TÙY CHỈNH TRÊN TRÌNH DUYỆT NÀY</div><h2>Cài đặt GitHub Daily</h2><div class="settings-grid"><section class="setting-block"><h3>Giọng đọc</h3><label>Giọng tiếng Việt <select id="voice-select"></select></label><label>Tốc độ <input id="speech-rate" type="range" min="0.7" max="1.2" step="0.05" value="${rate}"><span id="rate-value">${rate}×</span></label><p id="voice-hint"></p></section><section class="setting-block"><h3>Cỡ chữ</h3><label>Kích thước chữ <select id="font-scale">${FONT_SCALES.map(([value, label]) => `<option value="${value}" ${value === applyFontScale() ? 'selected' : ''}>${label}</option>`).join('')}</select></label><p>Áp dụng cho toàn bộ giao diện và được nhớ trên trình duyệt này.</p></section><section class="setting-block"><h3>Ảnh nền</h3><label>Hiện ảnh phòng làm việc <input id="bg-enabled" type="checkbox" ${bgSettings.enabled ? 'checked' : ''}></label><label>Tự đổi ảnh sau <select id="bg-interval">${BG_INTERVALS.map(sec => `<option value="${sec}" ${sec === bgSettings.intervalSec ? 'selected' : ''}>${sec < 60 ? `${sec} giây` : `${sec / 60} phút`}</option>`).join('')}</select></label><p>${prefersReducedMotion() ? 'Hệ thống đang bật giảm chuyển động nên ảnh nền đứng yên.' : 'Ảnh được đổi mờ dần; tạm dừng khi bạn chuyển sang tab khác.'}</p></section><section class="setting-block"><h3>Nguồn và giới hạn dữ liệu</h3><p>Dữ liệu thu thập tự động hằng ngày (nếu có) hoặc API tìm kiếm công khai của GitHub, không cần mã truy cập. Tìm kho mã có hơn 500 sao và được cập nhật trong 30 ngày; API có thể giới hạn số lần truy vấn.</p><p>Các lần đo trong trình duyệt và ghi chú chỉ được lưu trong localStorage của trình duyệt này.</p></section><section class="setting-block"><h3>Tích hợp chưa cấu hình</h3><p>Phát loa Google lúc 07:00 cần Home Assistant/Cast. Cài vào VS Code cần extension hoặc local bridge. Trang công khai không thể tự thực thi lệnh.</p></section><section class="setting-block"><h3>Tiêu chí thống kê</h3><div class="criteria-list"><div><b>Thứ tự mặc định</b><small>Sắp theo tổng sao, không gọi là xu hướng tăng.</small></div><div><b>Tăng trưởng</b><small>Chỉ so sánh các lần đo cách nhau đủ xa; nếu chưa đủ thì không kết luận.</small></div><div><b>Hoạt động</b><small>Ngày đẩy mã là tín hiệu hoạt động, không phải thước đo chất lượng.</small></div><div><b>Giấy phép</b><small>Hiển thị mã license từ metadata GitHub khi có.</small></div></div></section></div><div class="settings-actions"><button type="button" id="settings-export">Xuất dữ liệu cục bộ</button><button type="button" id="settings-clear">Xóa bộ nhớ cục bộ</button></div>`;
     fillVoiceOptions();
     $('#voice-select').addEventListener('change', event => {
       settings.voiceURI = event.target.value;
@@ -728,6 +729,10 @@
       $('#rate-value').textContent = `${event.target.value}×`;
       settings.rate = Number(event.target.value);
       writeStorage(KEYS.speech, settings);
+    });
+    $('#font-scale').addEventListener('change', event => {
+      writeStorage(KEYS.fontScale, Number(event.target.value));
+      applyFontScale();
     });
     $('#bg-enabled').addEventListener('change', event => {
       bgSettings.enabled = event.target.checked;
@@ -843,6 +848,42 @@
     applyBackground();
   }
 
+  /* ---------- Cỡ chữ ---------- */
+  const FONT_SCALES = [[1, 'Nhỏ (gốc)'], [1.15, 'Vừa (mặc định)'], [1.3, 'Lớn'], [1.45, 'Rất lớn']];
+
+  function applyFontScale() {
+    const stored = Number(readStorage(KEYS.fontScale, 1.15));
+    const scale = FONT_SCALES.some(([value]) => value === stored) ? stored : 1.15;
+    document.documentElement.style.setProperty('--fs', String(scale));
+    return scale;
+  }
+
+  /* ---------- Nút cuộn trang ---------- */
+  function initScrollButtons() {
+    const up = $('#scroll-up');
+    const down = $('#scroll-down');
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      up.hidden = window.scrollY < 300;
+      down.hidden = max < 600 || max - window.scrollY < 300;
+    };
+    const schedule = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    };
+    const scrollTo = top => window.scrollTo({ top, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    up.addEventListener('click', () => scrollTo(0));
+    down.addEventListener('click', () => scrollTo(document.documentElement.scrollHeight));
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(document.body);
+    update();
+  }
+
   /* ---------- Khởi tạo ---------- */
   function setSortLabel(button) {
     button.innerHTML = `Sắp xếp: ${state.sort === 'stars' ? 'Nhiều sao nhất' : 'Cập nhật gần đây'} <span>⌄</span>`;
@@ -927,8 +968,10 @@
 
   $('#today').textContent = new Intl.DateTimeFormat('vi-VN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: TZ }).format(new Date());
   $('#greeting').textContent = greeting();
+  applyFontScale();
   applyTheme();
   bindEvents();
+  initScrollButtons();
   renderFilterOptions();
   render();
   loadCollectedData();

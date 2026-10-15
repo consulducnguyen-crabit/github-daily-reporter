@@ -21,6 +21,7 @@ Dashboard tiếng Việt khám phá repository mã nguồn mở trên GitHub. �
 - Không gán nhãn tăng trưởng nếu chưa có hai lần đo cách nhau đủ xa (`growth()` trả `null`).
 - Thay đổi định dạng localStorage phải nâng hậu tố khóa (ví dụ `history-v3`) và có migration.
 - Hàm thuần mới đặt vào `lib.js` kèm test.
+- Cỡ chữ trong CSS viết dạng `calc(Npx*var(--fs))` để người dùng chỉnh được trong Cài đặt.
 
 ## Chạy và kiểm thử
 

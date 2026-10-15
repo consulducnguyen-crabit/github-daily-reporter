@@ -20,6 +20,7 @@ Kiểm thử hàm thuần: `npm test` (Node 20 trở lên).
 - Chi tiết repository: README tóm lược, liên kết, ghi chú cá nhân, đánh dấu đã đọc.
 - Báo cáo 1/7/30 ngày: repo nhiều sao nhất và repo tăng sao nhanh nhất (chỉ khi có hai lần đo cách nhau đủ xa).
 - Ảnh nền phòng làm việc tự đổi mờ dần mỗi 1 phút (tùy chỉnh 30 giây/1 phút/5 phút hoặc tắt trong Cài đặt; tạm dừng khi chuyển tab và đứng yên nếu hệ thống bật giảm chuyển động).
+- Cỡ chữ chỉnh được (Nhỏ/Vừa/Lớn/Rất lớn, mặc định Vừa) và nút nổi cuộn lên đầu/xuống cuối trang.
 - Xuất JSON/CSV, in báo cáo, chế độ tối (theo hệ thống hoặc chọn tay).
 - Bản tin âm thanh tiếng Việt dựng sẵn (`briefing.mp3`, tạo khi triển khai bằng Piper, nghe được trên mọi trình duyệt/điện thoại). Có thêm nút đọc bằng giọng vi-VN cài trên trình duyệt (dự phòng).
 
