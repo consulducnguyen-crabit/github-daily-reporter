@@ -191,14 +191,6 @@
     return new Intl.DateTimeFormat('vi-VN', { ...options, timeZone: TZ }).format(new Date(value));
   }
 
-  function greeting() {
-    const hour = Number(new Intl.DateTimeFormat('en-GB', { hour: '2-digit', hourCycle: 'h23', timeZone: TZ }).format(new Date()));
-    if (hour < 11) return 'Chào buổi sáng';
-    if (hour < 14) return 'Chào buổi trưa';
-    if (hour < 18) return 'Chào buổi chiều';
-    return 'Chào buổi tối';
-  }
-
   const initialsOf = name => name.split('/').map(part => part[0]).join('').slice(0, 2).toUpperCase();
   const debounce = (fn, wait = 150) => {
     let timer;
@@ -981,7 +973,6 @@
   }
 
   $('#today').textContent = new Intl.DateTimeFormat('vi-VN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: TZ }).format(new Date());
-  $('#greeting').textContent = greeting();
   applyFontScale();
   applyTheme();
   bindEvents();
