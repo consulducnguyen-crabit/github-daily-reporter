@@ -68,3 +68,5 @@ Danh sách mặc định và bản tin chữ/âm thanh ưu tiên số sao tăng 
 Workflow thu thập và triển khai tải README công khai của từng repo qua GitHub API, dùng GitHub Models (`openai/gpt-4o-mini`) để tạo tóm tắt 2–3 câu tiếng Việt và lưu vào `data/readme-summaries.json`. Token workflow cần quyền `models: read`; tài khoản phải được sử dụng GitHub Models và còn hạn mức. Không có khóa mô hình trong trình duyệt. Nội dung README được gửi tới GitHub Models chỉ để tóm tắt.
 
 Tóm tắt được tạo lại khi SHA của README thay đổi; lỗi tải/dịch giữ bản cũ. Trang chính hiển thị tóm tắt và liên kết nguồn, hoặc mô tả gốc kèm trạng thái chưa có tóm tắt. Lỗi tóm tắt không chặn triển khai dữ liệu repo. Chạy thủ công: `GITHUB_TOKEN=... node scripts/summarize-readmes.mjs`.
+
+Có thể dùng OpenAI thay GitHub Models bằng cách thêm GitHub Actions secret `OPENAI_API_KEY`; script tự chọn `gpt-4o-mini` trên OpenAI khi secret có giá trị. Không nhập khóa vào mã nguồn hoặc trang web. Phản hồi dịch vụ không đúng định dạng sẽ dừng xử lý sớm và ghi cảnh báo trong Actions.

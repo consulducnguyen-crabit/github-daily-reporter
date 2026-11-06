@@ -38,6 +38,7 @@ jobs:
         run: node scripts/summarize-readmes.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       - name: Prepare website files
         run: |
           mkdir _site
