@@ -58,3 +58,7 @@ Loa nằm trong mạng nhà nên GitHub Actions không điều khiển được;
 - Mức tăng sao chỉ hiển thị khi có hai lần đo cách nhau tối thiểu 1 giờ (thẻ) hoặc ~80% độ dài kỳ (báo cáo).
 - Tóm tắt tiếng Việt chi tiết chỉ có cho vài dự án mẫu; các dự án khác được đọc theo chủ đề, ngôn ngữ và số liệu.
 - Không có phát loa Google, phân tích AI hoặc tích hợp VS Code/local bridge; các phần này cần backend/thiết bị/quyền truy cập riêng (xem `plan.md`).
+
+## Xếp hạng bản tin theo tuần
+
+Danh sách mặc định và bản tin chữ/âm thanh ưu tiên số sao tăng thêm trong 7 ngày, trong phạm vi repo đang theo dõi. So sánh với lần đo gần mốc 7 ngày nhất, sai lệch tối đa 1 ngày; không dùng mốc quá cũ. Bản tin chọn tối đa 5 repo có mức tăng dương, bỏ repo thiếu lịch sử và thông báo nếu chưa đủ dữ liệu. Có thể chuyển sắp xếp sang tổng sao hoặc cập nhật gần đây.

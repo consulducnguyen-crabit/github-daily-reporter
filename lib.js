@@ -62,6 +62,25 @@
     return { delta: current - base.stars, spanMs: at - base.t, from: base.t };
   }
 
+  /** So sánh với mốc gần nhất cách một kỳ, sai lệch tối đa một ngày. */
+  function periodGrowth(series, current, at, days = 7) {
+    if (!Number.isFinite(at) || !Number.isFinite(current)) return null;
+    const target = at - days * DAY;
+    const tolerance = Math.min(DAY, days * DAY * 0.2);
+    const candidates = (series || []).filter(point => Number.isFinite(point.stars)
+      && point.t < at && Math.abs(point.t - target) <= tolerance);
+    candidates.sort((a, b) => Math.abs(a.t - target) - Math.abs(b.t - target) || a.t - b.t);
+    const base = candidates[0];
+    return base ? { delta: current - base.stars, spanMs: at - base.t, from: base.t } : null;
+  }
+
+  function rankWeekly(repositories, records, at) {
+    const index = buildIndex(records);
+    return repositories.map(repo => ({ repo, g: periodGrowth(index.get(repo.id), repo.stargazers_count, at) }))
+      .filter(item => item.g && item.g.delta > 0)
+      .sort((a, b) => b.g.delta - a.g.delta || a.repo.id - b.repo.id);
+  }
+
   function formatSpan(ms) {
     return ms < 48 * HOUR ? `${Math.max(1, Math.round(ms / HOUR))} giờ` : `${Math.round(ms / DAY)} ngày`;
   }
@@ -159,12 +178,14 @@
     return `Dự án thứ ${formatNumber(index + 1)}, ${repo.full_name}. ${summary}${language} Hiện có ${formatNumber(repo.stargazers_count)} lượt sao và ${formatNumber(repo.forks_count)} lượt rẽ nhánh.`;
   }
 
-  /** Các câu của bản tin: câu giới thiệu + 5 dự án nhiều sao nhất. */
-  function briefingSentences(repositories, dateLabel, formatNumber = String) {
-    const top = repositories.slice().sort((a, b) => b.stargazers_count - a.stargazers_count).slice(0, 5);
+  /** Bản tin chọn tối đa 5 repo tăng nhiều sao nhất tuần, chỉ khi đủ lịch sử. */
+  function briefingSentences(repositories, dateLabel, formatNumber = String, records = [], at = NaN) {
+    const top = rankWeekly(repositories, records, at).slice(0, 5);
     return [
-      `Bản tin GitHub Daily ngày ${dateLabel}. Có ${formatNumber(repositories.length)} dự án trong danh sách.`,
-      ...top.map((repo, index) => vietnameseSummary(repo, index, formatNumber))
+      `Bản tin GitHub Daily ngày ${dateLabel}. Có ${formatNumber(repositories.length)} dự án trong danh sách. Xếp hạng theo số sao tăng thêm trong 7 ngày, với mốc đo sai lệch tối đa một ngày.`,
+      ...(top.length ? top.map(({ repo, g }, index) =>
+        `${vietnameseSummary(repo, index, formatNumber)} Tăng ${formatNumber(g.delta)} sao trong khoảng ${formatNumber(Math.round(g.spanMs / DAY))} ngày qua.`)
+        : ['Chưa có dự án tăng sao với đủ lịch sử một tuần để tạo bản tin.'])
     ];
   }
 
@@ -178,5 +199,5 @@
       .trim();
   }
 
-  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory, numberToVietnamese, vietnameseSummary, briefingSentences, speechText, topicLabel };
+  return { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, mergeServerHistory, periodGrowth, rankWeekly, numberToVietnamese, vietnameseSummary, briefingSentences, speechText, topicLabel };
 });

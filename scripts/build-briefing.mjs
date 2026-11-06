@@ -22,13 +22,22 @@ if (!Array.isArray(latest.repositories) || !latest.repositories.length || !Numbe
   process.exit(0);
 }
 
+let history = { records: [] };
+try {
+  history = JSON.parse(await readFile(path.join(root, 'data', 'history.json'), 'utf8'));
+} catch {
+  console.log('Chưa có lịch sử hợp lệ; bản tin sẽ thông báo chưa đủ dữ liệu tuần.');
+}
+const records = (history.records || []).map(record => ({ ...record, t: Date.parse(record.t) }));
+const at = Date.parse(latest.fetchedAt);
+
 const when = new Date(latest.fetchedAt);
 const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Ho_Chi_Minh', day: 'numeric', month: 'numeric' }).formatToParts(when);
 const day = Number(parts.find(part => part.type === 'day').value);
 const month = Number(parts.find(part => part.type === 'month').value);
 
-const spoken = lib.briefingSentences(latest.repositories, `${lib.numberToVietnamese(day)} tháng ${lib.numberToVietnamese(month)}`, lib.numberToVietnamese).map(lib.speechText);
-const display = lib.briefingSentences(latest.repositories, `${day} tháng ${month}`, value => new Intl.NumberFormat('vi-VN').format(value));
+const spoken = lib.briefingSentences(latest.repositories, `${lib.numberToVietnamese(day)} tháng ${lib.numberToVietnamese(month)}`, lib.numberToVietnamese, records, at).map(lib.speechText);
+const display = lib.briefingSentences(latest.repositories, `${day} tháng ${month}`, value => new Intl.NumberFormat('vi-VN').format(value), records, at);
 
 await mkdir(outDir, { recursive: true });
 await writeFile(path.join(outDir, 'briefing.txt'), spoken.join('\n') + '\n');

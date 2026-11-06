@@ -37,7 +37,7 @@
       <section class="content-grid">
         <div class="primary-column">
           <section class="panel projects-panel" id="projects">
-            <div class="section-heading"><div><div class="eyebrow muted">Danh sách tuyển chọn</div><h2>Dự án nổi bật <span class="count-badge" id="result-count">0</span></h2></div><button class="text-button" id="sort-button">Sắp xếp: Nhiều sao nhất <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="section-heading"><div><div class="eyebrow muted">Danh sách tuyển chọn</div><h2>Dự án nổi bật <span class="count-badge" id="result-count">0</span></h2></div><button class="text-button" id="sort-button">Sắp xếp: Tăng sao trong tuần <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
             <div class="toolbar"><label class="search-box"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input id="search" type="search" placeholder="Tìm kho mã, ngôn ngữ, chủ đề..." aria-label="Tìm trong danh sách dự án"></label><select id="language-filter" aria-label="Lọc theo ngôn ngữ"><option value="">Mọi ngôn ngữ</option></select><button type="button" class="filter-button" id="saved-filter" aria-pressed="false">Đã lưu</button></div>
             <div class="advanced-toolbar"><select id="license-filter" aria-label="Lọc theo giấy phép"><option value="">Mọi giấy phép</option></select><label class="min-stars">Sao ≥ <input id="min-stars" type="number" min="0" step="100" placeholder="tối thiểu" aria-label="Số sao tối thiểu"></label><button type="button" class="filter-button" id="clear-filters">Xóa bộ lọc</button></div>
             <p class="list-note">Tên và mô tả dự án lấy nguyên văn từ GitHub; phần mô tả có thể là tiếng Anh.</p>
@@ -45,7 +45,7 @@
             <div id="repo-list" class="repo-list"></div>
             <div class="list-footer"><span id="list-status">Dữ liệu minh họa</span><div class="footer-actions"><button class="text-button" id="export-json">Xuất JSON</button><button class="text-button" id="export-csv">Xuất CSV</button><button class="text-button" id="print-report">In báo cáo</button><button class="text-button" id="load-more">Tải thêm</button></div></div>
           </section>
-          <section class="panel report-panel" id="report"><div class="section-heading"><div><div class="eyebrow muted">Điểm nhấn · <span id="report-period-label">Hôm nay</span></div><h2>Bản tin <select id="report-period" class="inline-select" aria-label="Kỳ báo cáo"><option value="day">hôm nay</option><option value="week">7 ngày</option><option value="month">30 ngày</option></select></h2></div><span class="tag tag-peach">Tóm tắt</span></div><p class="report-copy" id="report-copy"></p><div class="report-highlights" id="report-highlights"></div></section>
+          <section class="panel report-panel" id="report"><div class="section-heading"><div><div class="eyebrow muted">Điểm nhấn · <span id="report-period-label">Hôm nay</span></div><h2>Bản tin <select id="report-period" class="inline-select" aria-label="Kỳ báo cáo"><option value="day">hôm nay</option><option value="week" selected>7 ngày</option><option value="month">30 ngày</option></select></h2></div><span class="tag tag-peach">Tóm tắt</span></div><p class="report-copy" id="report-copy"></p><div class="report-highlights" id="report-highlights"></div></section>
           <section class="panel history-panel" id="history"><div class="section-heading"><div><div class="eyebrow muted">Lưu trên trình duyệt này</div><h2>Lịch sử báo cáo</h2></div><button class="text-button" id="clear-history">Xóa lịch sử</button></div><div id="history-list" class="history-list"></div><p class="chart-footnote">Lịch sử chỉ nằm trên thiết bị/trình duyệt này, tối đa 90 ngày.</p></section>
         </div>
         <aside class="right-column">
@@ -66,7 +66,7 @@
   <dialog id="settings-dialog" class="wide-dialog"><form method="dialog"><button class="dialog-close" aria-label="Đóng">×</button><div id="settings-content"></div></form></dialog>
   <div class="scroll-fab" role="group" aria-label="Cuộn trang"><button type="button" class="fab" id="scroll-up" aria-label="Lên đầu trang" title="Lên đầu trang" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button><button type="button" class="fab" id="scroll-down" aria-label="Xuống cuối trang" title="Xuống cuối trang" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5.5 12.5L12 19l6.5-6.5"/></svg></button></div>
   <div id="toast" role="status" class="toast"></div>
-  <script src="lib.js" defer></script>
-  <script src="app.js?v=7a2a8dfddd1c" defer></script>
+  <script src="lib.js?v=ac3def12a27b" defer></script>
+  <script src="app.js?v=efa08b805f61" defer></script>
 </body>
 </html>

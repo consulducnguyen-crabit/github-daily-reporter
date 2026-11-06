@@ -95,14 +95,31 @@ test('numberToVietnamese đọc số thành chữ', () => {
   assert.equal(lib.numberToVietnamese(-3), '-3');
 });
 
-test('briefingSentences lấy 5 repo nhiều sao nhất và dùng định dạng số được truyền vào', () => {
-  const repos = Array.from({ length: 7 }, (_, i) => ({ id: i, full_name: `o/r${i}`, stargazers_count: 100 * (i + 1), forks_count: 5, language: i === 6 ? 'C++' : null, topics: [] }));
-  const lines = lib.briefingSentences(repos, '16 tháng 10', lib.numberToVietnamese);
-  assert.equal(lines.length, 6);
-  assert.match(lines[0], /^Bản tin GitHub Daily ngày 16 tháng 10\. Có bảy dự án/);
-  assert.match(lines[1], /^Dự án thứ một, o\/r6\./);
-  assert.match(lines[1], /Ngôn ngữ chính là C\+\+\./);
-  assert.match(lines[1], /bảy trăm lượt sao và năm lượt rẽ nhánh/);
+test('bản tin xếp theo sao tăng trong tuần, không theo tổng sao', () => {
+  const at = Date.parse('2026-11-06T00:00:00Z');
+  const repos = [
+    { id: 1, full_name: 'o/large', stargazers_count: 10000, forks_count: 5 },
+    { id: 2, full_name: 'o/rising', stargazers_count: 700, forks_count: 5 },
+    { id: 3, full_name: 'o/new', stargazers_count: 20000, forks_count: 5 },
+    { id: 4, full_name: 'o/falling', stargazers_count: 100, forks_count: 5 }
+  ];
+  const records = [{ t: at - 7 * DAY, stars: { 1: 9990, 2: 100, 4: 150 } }];
+  const ranked = lib.rankWeekly(repos, records, at);
+  assert.deepEqual(ranked.map(item => item.repo.id), [2, 1]);
+  const lines = lib.briefingSentences(repos, '6 tháng 11', lib.numberToVietnamese, records, at);
+  assert.equal(lines.length, 3);
+  assert.match(lines[1], /o\/rising/);
+  assert.match(lines[1], /Tăng sáu trăm sao/);
+  assert.match(lib.briefingSentences(repos, '6 tháng 11')[1], /Chưa có/);
+});
+
+test('mốc tăng sao tuần cho phép lệch một ngày, loại mốc quá cũ và dữ liệu không hợp lệ', () => {
+  const at = 30 * DAY;
+  assert.equal(lib.periodGrowth([{ t: at - 9 * DAY, stars: 10 }], 100, at), null);
+  assert.equal(lib.periodGrowth([{ t: at - DAY, stars: 10 }], 100, at), null);
+  assert.equal(lib.periodGrowth([{ t: at - 7 * DAY, stars: NaN }], 100, at), null);
+  assert.equal(lib.periodGrowth([{ t: at - 8 * DAY, stars: 10 }, { t: at - 7 * DAY, stars: 50 }], 100, at).delta, 50);
+  assert.equal(lib.periodGrowth([{ t: at - 6 * DAY, stars: 10 }], 100, at).delta, 90);
 });
 
 test('speechText chuẩn hóa ký hiệu cho giọng đọc', () => {

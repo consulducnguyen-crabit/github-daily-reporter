@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, briefingSentences, topicLabel } = window.GDLib;
+  const { HOUR, DAY, escapeHtml, safeUrl, csvCell, buildIndex, growth, formatSpan, upsertSnapshot, briefingSentences, periodGrowth, topicLabel } = window.GDLib;
 
   /* ---------- Dữ liệu khởi đầu (minh họa) ---------- */
   const demoRepositories = [
@@ -76,7 +76,7 @@
 
   const state = {
     repositories: cachedRepos?.length ? cachedRepos : demoRepositories,
-    sort: 'stars',
+    sort: 'weekly',
     savedOnly: false,
     nextPage: cachedRepos ? Math.floor(cachedRepos.length / PAGE_SIZE) + 1 : 1,
     totalCount: cache?.totalCount || 0,
@@ -168,6 +168,10 @@
     return growth(historyIndex().get(repo.id), repo.stargazers_count, dataTime(), minAgeMs);
   }
 
+  function weeklyGrowth(repo) {
+    return state.live ? periodGrowth(historyIndex().get(repo.id), repo.stargazers_count, dataTime()) : null;
+  }
+
   /* ---------- Tiện ích hiển thị ---------- */
   function humanNumber(value) {
     const n = Number(value) || 0;
@@ -216,7 +220,10 @@
           && repo.stargazers_count >= minStars
           && (!state.savedOnly || saved.includes(repo.id));
       })
-      .sort((a, b) => (state.sort === 'stars' ? b.stargazers_count - a.stargazers_count : (b.pushed_at || '').localeCompare(a.pushed_at || '')));
+      .sort((a, b) => {
+        if (state.sort === 'weekly') return (weeklyGrowth(b)?.delta ?? -Infinity) - (weeklyGrowth(a)?.delta ?? -Infinity) || a.id - b.id;
+        return state.sort === 'stars' ? b.stargazers_count - a.stargazers_count : (b.pushed_at || '').localeCompare(a.pushed_at || '');
+      });
   }
 
   function countBy(repos, pick) {
@@ -245,7 +252,7 @@
     const isRead = state.readIds.includes(repo.id);
     const avatarUrl = safeUrl(repo.owner?.avatar_url);
     const avatar = avatarUrl ? `<img src="${escapeHtml(avatarUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : '';
-    const change = growthFor(repo, HOUR);
+    const change = weeklyGrowth(repo);
     const changeTag = change
       ? `<span class="repo-tag">${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao sau ${formatSpan(change.spanMs)}</span>`
       : '<span class="repo-tag trending">Chưa đủ dữ liệu lịch sử</span>';
@@ -309,10 +316,10 @@
     const records = unifiedHistory();
     const inPeriod = key === 'day' ? records.filter(record => dateKey(new Date(record.t)) === dateKey(new Date(at))) : records.filter(record => at - record.t <= period.days * DAY);
     const topStars = state.repositories.slice().sort((a, b) => b.stargazers_count - a.stargazers_count)[0];
-    // Tăng trưởng chỉ tính khi có điểm đo cách ít nhất ~80% độ dài kỳ.
+    // Chỉ so sánh với điểm đo gần mốc kỳ, không lấy mốc quá cũ.
     const growers = state.live
       ? state.repositories
-        .map(repo => ({ repo, g: growthFor(repo, period.days * DAY * 0.8) }))
+        .map(repo => ({ repo, g: periodGrowth(historyIndex().get(repo.id), repo.stargazers_count, dataTime(), period.days) }))
         .filter(item => item.g && item.g.delta > 0)
         .sort((a, b) => b.g.delta - a.g.delta)
         .slice(0, 3)
@@ -327,7 +334,7 @@
     const second = growers.length
       ? `<div><span class="highlight-icon">${ICON.trend}</span><span><b>Tăng nhanh nhất: ${escapeHtml(growers[0].repo.full_name)}</b><small>+${fmt.format(growers[0].g.delta)} sao sau ${formatSpan(growers[0].g.spanMs)}${growers.length > 1 ? `. Tiếp theo: ${growers.slice(1).map(item => escapeHtml(item.repo.full_name)).join(', ')}.` : '.'}</small></span></div>`
       : `<div><span class="highlight-icon">${ICON.chart}</span><span><b>Đang theo dõi ${fmt.format(state.repositories.length)} dự án</b><small>${inPeriod.length ? `${inPeriod.length} lần đo trong kỳ.` : 'Lịch sử tăng trưởng sẽ xuất hiện sau các lần thu thập.'}</small></span></div>`;
-    $('#report-highlights').innerHTML = first + second;
+    $('#report-highlights').innerHTML = second + first;
   }
 
   function renderHistory() {
@@ -447,7 +454,7 @@
     const repoUrl = safeUrl(repo.html_url, '#');
     const homepage = safeUrl(repo.homepage);
     const topics = (repo.topics || []).map(topic => `<span class="repo-tag">${escapeHtml(topicLabel(topic))}</span>`).join('') || '<span class="repo-tag">Chủ đề chưa khai báo</span>';
-    const change = growthFor(repo, HOUR);
+    const change = weeklyGrowth(repo);
     const link = (href, label) => `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${label} ${ICON.ext}</a>`;
     $('#repo-detail').innerHTML = `<div class="detail-header"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}</div><div><h2>${escapeHtml(repo.full_name)}</h2><p>${escapeHtml(repo.description_vi || repo.description || 'Kho mã chưa có mô tả.')}</p></div></div><div class="detail-stats"><div class="detail-stat"><small>Sao</small><b>${ICON.star} ${humanNumber(repo.stargazers_count)}</b></div><div class="detail-stat"><small>Lượt rẽ nhánh</small><b>${humanNumber(repo.forks_count)}</b></div><div class="detail-stat"><small>Vấn đề đang mở</small><b>${humanNumber(repo.open_issues_count)}</b></div><div class="detail-stat"><small>Giấy phép</small><b>${escapeHtml(license)}</b></div></div><div class="detail-section"><h3>Thông tin quan sát được</h3><p>Ngôn ngữ chính: ${escapeHtml(repo.language || 'chưa khai báo')}. Tạo lúc ${formatDate(repo.created_at)}. Đẩy mã gần nhất ${formatDate(repo.pushed_at)}. ${change ? `Thay đổi so với lần đo cách đây ${formatSpan(change.spanMs)}: ${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao.` : 'Chưa có đủ lần đo lịch sử để tính tăng trưởng.'}</p></div><div class="detail-section"><h3>Chủ đề</h3><div class="detail-topics">${topics}</div></div><div class="detail-section"><h3>Ghi chú cá nhân</h3><textarea class="detail-note" id="repo-note" placeholder="Ghi điều bạn muốn đọc hoặc kiểm tra sau...">${escapeHtml(notes()[repo.full_name] || '')}</textarea><small class="subtle">Ghi chú chỉ được lưu trong trình duyệt này.</small></div><div class="detail-links">${link(repoUrl, 'Kho mã nguồn')}${link(`${repoUrl}/releases`, 'Bản phát hành')}${link(`${repoUrl}/blob/HEAD/README.md`, 'Tài liệu README (nếu có)')}${homepage ? link(homepage, 'Trang dự án') : ''}</div><div class="detail-actions"><button type="button" id="detail-save">${saved ? 'Đã lưu' : 'Lưu đọc sau'}</button><button type="button" id="detail-read">${read ? 'Đã đánh dấu đã đọc' : 'Đánh dấu đã đọc'}</button><button type="button" id="copy-clone">Sao chép lệnh git clone</button><button type="button" id="detail-install">Cách cài an toàn</button></div><p class="subtle">Mô tả và số liệu lấy từ API của GitHub; chưa có phân tích tự động nội dung README. Hãy đọc README và kiểm tra giấy phép trước khi cài.</p>`;
 
@@ -667,7 +674,7 @@
     const session = ++speechSession;
     speechSynthesis.cancel();
     speechSynthesis.resume();
-    const queue = briefingSentences(state.repositories, formatDate(new Date(), { day: 'numeric', month: 'long' }), value => fmt.format(value));
+    const queue = briefingSentences(state.repositories, formatDate(new Date(), { day: 'numeric', month: 'long' }), value => fmt.format(value), state.live ? unifiedHistory() : [], dataTime());
     state.readQueue = queue.slice();
     $('#speech-summary').textContent = queue.join(' ');
     state.reading = true;
@@ -892,7 +899,7 @@
 
   /* ---------- Khởi tạo ---------- */
   function setSortLabel(button) {
-    button.innerHTML = `Sắp xếp: ${state.sort === 'stars' ? 'Nhiều sao nhất' : 'Cập nhật gần đây'} ${ICON.chevron}`;
+    button.innerHTML = `Sắp xếp: ${state.sort === 'weekly' ? 'Tăng sao trong tuần' : state.sort === 'stars' ? 'Nhiều sao nhất' : 'Cập nhật gần đây'} ${ICON.chevron}`;
   }
 
   function applyTheme() {
@@ -924,7 +931,7 @@
       render();
     });
     $('#sort-button').addEventListener('click', event => {
-      state.sort = state.sort === 'stars' ? 'recent' : 'stars';
+      state.sort = state.sort === 'weekly' ? 'stars' : state.sort === 'stars' ? 'recent' : 'weekly';
       setSortLabel(event.currentTarget);
       render();
     });
