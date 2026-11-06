@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data:; connect-src 'self' https://api.github.com; media-src 'self'; base-uri 'none'; object-src 'none'">
   <meta name="description" content="Dashboard khám phá dự án mã nguồn mở trên GitHub.">
   <title>GitHub Daily — Khám phá mã nguồn mở</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=7c6e8a000782">
 </head>
 <body>
   <div class="bg-stage" aria-hidden="true"><div class="bg-layer" id="bg-a"></div><div class="bg-layer" id="bg-b"></div><div class="bg-veil"></div></div>
@@ -40,7 +40,7 @@
             <div class="section-heading"><div><div class="eyebrow muted">Danh sách tuyển chọn</div><h2>Dự án nổi bật <span class="count-badge" id="result-count">0</span></h2></div><button class="text-button" id="sort-button">Sắp xếp: Tăng sao trong tuần <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button></div>
             <div class="toolbar"><label class="search-box"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input id="search" type="search" placeholder="Tìm kho mã, ngôn ngữ, chủ đề..." aria-label="Tìm trong danh sách dự án"></label><select id="language-filter" aria-label="Lọc theo ngôn ngữ"><option value="">Mọi ngôn ngữ</option></select><button type="button" class="filter-button" id="saved-filter" aria-pressed="false">Đã lưu</button></div>
             <div class="advanced-toolbar"><select id="license-filter" aria-label="Lọc theo giấy phép"><option value="">Mọi giấy phép</option></select><label class="min-stars">Sao ≥ <input id="min-stars" type="number" min="0" step="100" placeholder="tối thiểu" aria-label="Số sao tối thiểu"></label><button type="button" class="filter-button" id="clear-filters">Xóa bộ lọc</button></div>
-            <p class="list-note">Tên và mô tả dự án lấy nguyên văn từ GitHub; phần mô tả có thể là tiếng Anh.</p>
+            <p class="list-note">Tóm tắt tiếng Việt được tạo từ README của từng dự án. Bạn có thể mở README nguồn để xem chi tiết.</p>
             <p id="filter-status" class="sr-only" role="status" aria-live="polite"></p>
             <div id="repo-list" class="repo-list"></div>
             <div class="list-footer"><span id="list-status">Dữ liệu minh họa</span><div class="footer-actions"><button class="text-button" id="export-json">Xuất JSON</button><button class="text-button" id="export-csv">Xuất CSV</button><button class="text-button" id="print-report">In báo cáo</button><button class="text-button" id="load-more">Tải thêm</button></div></div>
@@ -67,6 +67,6 @@
   <div class="scroll-fab" role="group" aria-label="Cuộn trang"><button type="button" class="fab" id="scroll-up" aria-label="Lên đầu trang" title="Lên đầu trang" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button><button type="button" class="fab" id="scroll-down" aria-label="Xuống cuối trang" title="Xuống cuối trang" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5.5 12.5L12 19l6.5-6.5"/></svg></button></div>
   <div id="toast" role="status" class="toast"></div>
   <script src="lib.js?v=ac3def12a27b" defer></script>
-  <script src="app.js?v=efa08b805f61" defer></script>
+  <script src="app.js?v=4b84e0b91005" defer></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  models: read
   contents: write
   actions: write
 
@@ -24,9 +25,15 @@ jobs:
         with:
           node-version: 22
       - name: Run tests
-        run: node --test tests/lib.test.js
+        run: npm test
       - name: Collect data
         run: node scripts/collect.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Summarize READMEs in Vietnamese
+        timeout-minutes: 25
+        continue-on-error: true
+        run: node scripts/summarize-readmes.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit data

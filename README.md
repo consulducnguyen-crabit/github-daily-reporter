@@ -62,3 +62,9 @@ Loa nằm trong mạng nhà nên GitHub Actions không điều khiển được;
 ## Xếp hạng bản tin theo tuần
 
 Danh sách mặc định và bản tin chữ/âm thanh ưu tiên số sao tăng thêm trong 7 ngày, trong phạm vi repo đang theo dõi. So sánh với lần đo gần mốc 7 ngày nhất, sai lệch tối đa 1 ngày; không dùng mốc quá cũ. Bản tin chọn tối đa 5 repo có mức tăng dương, bỏ repo thiếu lịch sử và thông báo nếu chưa đủ dữ liệu. Có thể chuyển sắp xếp sang tổng sao hoặc cập nhật gần đây.
+
+## Tóm tắt README tiếng Việt
+
+Workflow thu thập và triển khai tải README công khai của từng repo qua GitHub API, dùng GitHub Models (`openai/gpt-4o-mini`) để tạo tóm tắt 2–3 câu tiếng Việt và lưu vào `data/readme-summaries.json`. Token workflow cần quyền `models: read`; tài khoản phải được sử dụng GitHub Models và còn hạn mức. Không có khóa mô hình trong trình duyệt. Nội dung README được gửi tới GitHub Models chỉ để tóm tắt.
+
+Tóm tắt được tạo lại khi SHA của README thay đổi; lỗi tải/dịch giữ bản cũ. Trang chính hiển thị tóm tắt và liên kết nguồn, hoặc mô tả gốc kèm trạng thái chưa có tóm tắt. Lỗi tóm tắt không chặn triển khai dữ liệu repo. Chạy thủ công: `GITHUB_TOKEN=... node scripts/summarize-readmes.mjs`.

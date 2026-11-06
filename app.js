@@ -246,6 +246,12 @@
     $('#license-filter').innerHTML = ['<option value="">Mọi giấy phép</option>', ...Object.keys(licenses).sort().map(item => option(item, item, currentLicense)), option('NOASSERTION', 'Chưa khai báo', currentLicense)].join('');
   }
 
+  let readmeSummaries = {};
+  function summaryFor(repo) {
+    const entry = readmeSummaries[repo.id];
+    return entry?.full_name === repo.full_name ? entry : null;
+  }
+
   /* ---------- Hiển thị ---------- */
   function repoCard(repo, saved) {
     const isSaved = saved.includes(repo.id);
@@ -257,7 +263,7 @@
       ? `<span class="repo-tag">${change.delta >= 0 ? '+' : ''}${fmt.format(change.delta)} sao sau ${formatSpan(change.spanMs)}</span>`
       : '<span class="repo-tag trending">Chưa đủ dữ liệu lịch sử</span>';
     const topics = (repo.topics || []).slice(0, 3).map(topic => `<span class="repo-tag">${escapeHtml(topicLabel(topic))}</span>`).join('');
-    return `<article class="repo-card"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}${avatar}</div><div><a class="repo-name" href="${escapeHtml(safeUrl(repo.html_url, '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.full_name)}</a><p class="repo-desc" title="${escapeHtml(repo.description || '')}">${escapeHtml(repo.description_vi || repo.description || 'Chưa có mô tả.')}</p><div class="repo-meta"><span><i class="language-dot"></i>${escapeHtml(repo.language || 'Chưa phân loại')}</span><span>${ICON.fork}${humanNumber(repo.forks_count)} nhánh</span><span>${ICON.issue}${humanNumber(repo.open_issues_count)} vấn đề đang mở</span><span>Cập nhật ${formatDate(repo.pushed_at, { day: 'numeric', month: 'short' })}</span></div><div class="repo-tags">${topics}${changeTag}${isRead ? `<span class="repo-tag">${ICON.check} Đã đọc</span>` : ''}</div><button type="button" class="repo-detail-button" data-detail="${repo.id}">Đọc phân tích</button></div><div class="repo-side"><span class="stars">${ICON.star}${humanNumber(repo.stargazers_count)}</span><button type="button" class="save-button ${isSaved ? 'saved' : ''}" data-save="${repo.id}" aria-label="${isSaved ? 'Bỏ lưu' : 'Lưu'} ${escapeHtml(repo.full_name)}">${isSaved ? ICON.heartFill : ICON.heart}</button></div></article>`;
+    return `<article class="repo-card"><div class="repo-avatar">${escapeHtml(initialsOf(repo.full_name))}${avatar}</div><div><a class="repo-name" href="${escapeHtml(safeUrl(repo.html_url, '#'))}" target="_blank" rel="noopener noreferrer">${escapeHtml(repo.full_name)}</a><p class="repo-desc" title="${escapeHtml(repo.description || '')}">${escapeHtml(summaryFor(repo)?.summary_vi || repo.description_vi || repo.description || 'Chưa có mô tả.')}</p>${summaryFor(repo) ? `<small class="subtle">Tóm tắt tiếng Việt từ <a href="${escapeHtml(safeUrl(summaryFor(repo).source_url, repo.html_url))}" target="_blank" rel="noopener noreferrer">README nguồn</a></small>` : '<small class="subtle">Chưa có tóm tắt README tiếng Việt.</small>'}<div class="repo-meta"><span><i class="language-dot"></i>${escapeHtml(repo.language || 'Chưa phân loại')}</span><span>${ICON.fork}${humanNumber(repo.forks_count)} nhánh</span><span>${ICON.issue}${humanNumber(repo.open_issues_count)} vấn đề đang mở</span><span>Cập nhật ${formatDate(repo.pushed_at, { day: 'numeric', month: 'short' })}</span></div><div class="repo-tags">${topics}${changeTag}${isRead ? `<span class="repo-tag">${ICON.check} Đã đọc</span>` : ''}</div><button type="button" class="repo-detail-button" data-detail="${repo.id}">Đọc phân tích</button></div><div class="repo-side"><span class="stars">${ICON.star}${humanNumber(repo.stargazers_count)}</span><button type="button" class="save-button ${isSaved ? 'saved' : ''}" data-save="${repo.id}" aria-label="${isSaved ? 'Bỏ lưu' : 'Lưu'} ${escapeHtml(repo.full_name)}">${isSaved ? ICON.heartFill : ICON.heart}</button></div></article>`;
   }
 
   function sourceLabel() {
@@ -393,8 +399,9 @@
 
   /** Nạp dữ liệu do GitHub Actions thu thập hằng ngày (nếu có), dùng nếu mới hơn cache cục bộ. */
   async function loadCollectedData() {
-    const [latest, history] = await Promise.all([fetchJson('data/latest.json'), fetchJson('data/history.json')]);
-    let changed = false;
+    const [latest, history, summaries] = await Promise.all([fetchJson('data/latest.json'), fetchJson('data/history.json'), fetchJson('data/readme-summaries.json')]);
+    if (summaries?.repositories) readmeSummaries = summaries.repositories;
+    let changed = Boolean(summaries?.repositories);
     if (history && Array.isArray(history.records)) {
       state.serverHistory = history.records
         .map(record => ({ t: Date.parse(record.t), source: 'collector', count: Object.keys(record.stars || {}).length, stars: record.stars || {} }))
